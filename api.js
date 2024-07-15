@@ -22,7 +22,7 @@ mongoose
   });
 
 const app = express();
-const UserRouter = require("./router/UserRouter");
+const UserRouter = require("./router/userRouter");
 
 app.use(express.json());
 app.use("/api/user", UserRouter);
@@ -45,115 +45,6 @@ app.use(function (req, res, next) {
     next();
   }
 });
-
-app.get("/api/user", getAllUserHandler);
-app.post("/api/user", createuserHandler);
-app.get("/api/user/:id", getUserById);
-app.patch("/api/user/:id", updatedUserById);
-app.delete("/api/user/:id", deleteUserById);
-
-async function getAllUserHandler(req, res) {
-  try {
-    console.log("I am inside  get method");
-
-    const userDataStore = await UserModel.find();
-    if (userDataStore.length == 0) {
-      throw new Error("No users are present");
-    }
-    res.status(200).json({
-      status: "success",
-      message: userDataStore,
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: "failure",
-      message: err.message,
-    });
-  }
-}
-async function createuserHandler(req, res) {
-  try {
-    const userDetails = req.body;
-    // adding user to the file
-    const user = await UserModel.create(userDetails);
-
-    res.status(200).json({
-      status: "successfull",
-      message: `added  the user `,
-      user: user,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "failure",
-      message: err.message,
-    });
-  }
-}
-
-async function getUserById(req, res) {
-  try {
-    const userId = req.params.userId;
-    const userDetails = await UserModel.findById(userId);
-    if (userDetails == "no user found") {
-      throw new Error(`user with ${userId} not found`);
-    } else {
-      res.status(200).json({
-        status: "successfull",
-        message: userDetails,
-      });
-    }
-  } catch (err) {
-    res.status(404).json({
-      status: "failure",
-      message: err.message,
-    });
-  }
-}
-
-async function updatedUserById(req, res) {
-  try {
-    const { id } = req.params;
-    const updatedUserData = req.body;
-    const updatedUser = await UserModel.findByIdAndUpdate(id, updatedUserData, {
-      new: true,
-    });
-    if (!updatedUser) {
-      throw new Error("User not found");
-    } else {
-      res.status(200).json({
-        status: 200,
-        message: "user updated successfully",
-        data: updatedUser,
-      });
-    }
-  } catch (err) {
-    res.status(404).json({
-      status: "failure",
-      message: err.message,
-    });
-  }
-}
-
-async function deleteUserById(req, res) {
-  try {
-    const { id } = req.params;
-    const deletedUser = await UserModel.findByIdAndDelete(id);
-    if (!deletedUser) {
-      throw new Error("User not found");
-    } else {
-      res.status(200).json({
-        status: 200,
-        message: "user updated successfully",
-        data: deletedUser,
-      });
-    }
-  } catch (err) {
-    res.status(404).json({
-      status: "failure",
-      message: err.message,
-    });
-  }
-}
 
 app.use(function cb(req, res) {
   res.status(404).json({
