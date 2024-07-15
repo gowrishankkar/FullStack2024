@@ -21,7 +21,41 @@ mongoose
   .catch((error) => {
     console.log("mongo error", error);
   });
-// server
+
+//   Schema
+const userSchemaRules = {
+    name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+        minlength: 8,
+    },
+    confirmPassword: {
+        type: String,
+        required: true,
+        minlength: 8,
+        // validate property 
+        validate: function () {
+            return this.password == this.confirmPassword
+        }
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now()
+    }
+}
+const userSchema = new mongoose.Schema(userSchemaRules);
+const UserModel = mongoose.model("userModel", userSchema);
+
+
 
 app.use(express.json());
 
@@ -66,17 +100,24 @@ function getAllUserHandler(req, res) {
     });
   }
 }
-function createuserHandler(req, res) {
-  const id = short.generate();
-  const userDetails = req.body;
-  userDetails.id = id;
-  userDataStore.push(userDetails);
-  const struserStore = JSON.stringify(userDataStore);
-  fs.writeFileSync("./dev-data.json", struserStore);
-  res.status(200).json({
-    status: "successfull",
-    message: `update the user with ${id}`,
-  });
+async function createuserHandler(req, res) {
+    try {
+        const userDetails = req.body;
+        // adding user to the file 
+        const user = await UserModel.create(userDetails);
+
+        res.status(200).json({
+            status: "successfull",
+            message: `added  the user `,
+            user: user
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: "failure",
+            message: err.message
+        })
+    }
+
 }
 function getUserById(req, res) {
   try {
@@ -104,7 +145,7 @@ app.use(function cb(req, res) {
     message: "Route not found",
   });
 });
-
+// server
 app.listen(Port, function () {
   console.log("sever is listening to port 3000");
 });
