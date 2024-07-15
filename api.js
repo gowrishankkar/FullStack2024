@@ -3,11 +3,24 @@ const fs = require("fs");
 
 const app = express();
 const short = require("short-uuid");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
 // reading the content
 const strContent = fs.readFileSync("./dev-data.json", "utf-8");
 const userDataStore = JSON.parse(strContent);
+const DB = process.env.DATABASE;
+const Port = process.env.PORT;
 
+console.log("DB", DB, Port);
+mongoose
+  .connect(DB)
+  .then(() => {
+    console.log("conected to mongodb");
+  })
+  .catch((error) => {
+    console.log("mongo error", error);
+  });
 // server
 
 app.use(express.json());
@@ -92,8 +105,6 @@ app.use(function cb(req, res) {
   });
 });
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, function () {
+app.listen(Port, function () {
   console.log("sever is listening to port 3000");
 });
