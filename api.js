@@ -1,7 +1,6 @@
 const express = require("express");
 const fs = require("fs");
 
-const app = express();
 const short = require("short-uuid");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -22,42 +21,11 @@ mongoose
     console.log("mongo error", error);
   });
 
-//   Schema
-const userSchemaRules = {
-    name: {
-        type: String,
-        required: true,
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        minlength: 8,
-    },
-    confirmPassword: {
-        type: String,
-        required: true,
-        minlength: 8,
-        // validate property 
-        validate: function () {
-            return this.password == this.confirmPassword
-        }
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now()
-    }
-}
-const userSchema = new mongoose.Schema(userSchemaRules);
-const UserModel = mongoose.model("userModel", userSchema);
-
-
+const app = express();
+const UserRouter = require("./router/UserRouter");
 
 app.use(express.json());
+app.use("/api/user", UserRouter);
 
 app.use(function (req, res, next) {
   // console.log("36",req.method);
@@ -80,12 +48,15 @@ app.use(function (req, res, next) {
 
 app.get("/api/user", getAllUserHandler);
 app.post("/api/user", createuserHandler);
-app.get("/api/user/:userId", getUserById);
+app.get("/api/user/:id", getUserById);
+app.patch("/api/user/:id", updatedUserById);
+app.delete("/api/user/:id", deleteUserById);
 
-function getAllUserHandler(req, res) {
+async function getAllUserHandler(req, res) {
   try {
     console.log("I am inside  get method");
 
+    const userDataStore = await UserModel.find();
     if (userDataStore.length == 0) {
       throw new Error("No users are present");
     }
@@ -101,34 +72,79 @@ function getAllUserHandler(req, res) {
   }
 }
 async function createuserHandler(req, res) {
-    try {
-        const userDetails = req.body;
-        // adding user to the file 
-        const user = await UserModel.create(userDetails);
+  try {
+    const userDetails = req.body;
+    // adding user to the file
+    const user = await UserModel.create(userDetails);
 
-        res.status(200).json({
-            status: "successfull",
-            message: `added  the user `,
-            user: user
-        })
-    } catch (err) {
-        res.status(500).json({
-            status: "failure",
-            message: err.message
-        })
-    }
-
+    res.status(200).json({
+      status: "successfull",
+      message: `added  the user `,
+      user: user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "failure",
+      message: err.message,
+    });
+  }
 }
-function getUserById(req, res) {
+
+async function getUserById(req, res) {
   try {
     const userId = req.params.userId;
-    const userDetails = getUserByid(userId);
+    const userDetails = await UserModel.findById(userId);
     if (userDetails == "no user found") {
       throw new Error(`user with ${userId} not found`);
     } else {
       res.status(200).json({
         status: "successfull",
         message: userDetails,
+      });
+    }
+  } catch (err) {
+    res.status(404).json({
+      status: "failure",
+      message: err.message,
+    });
+  }
+}
+
+async function updatedUserById(req, res) {
+  try {
+    const { id } = req.params;
+    const updatedUserData = req.body;
+    const updatedUser = await UserModel.findByIdAndUpdate(id, updatedUserData, {
+      new: true,
+    });
+    if (!updatedUser) {
+      throw new Error("User not found");
+    } else {
+      res.status(200).json({
+        status: 200,
+        message: "user updated successfully",
+        data: updatedUser,
+      });
+    }
+  } catch (err) {
+    res.status(404).json({
+      status: "failure",
+      message: err.message,
+    });
+  }
+}
+
+async function deleteUserById(req, res) {
+  try {
+    const { id } = req.params;
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new Error("User not found");
+    } else {
+      res.status(200).json({
+        status: 200,
+        message: "user updated successfully",
+        data: deletedUser,
       });
     }
   } catch (err) {
