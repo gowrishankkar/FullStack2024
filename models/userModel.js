@@ -30,8 +30,7 @@ const userSchemaRules = {
         default: Date.now()
     }
 }
-// schema-> structure and validation 
+
 const userSchema = new mongoose.Schema(userSchemaRules);
-// this model -> will have queries 
 const UserModel = mongoose.model("userModel", userSchema);
 module.exports=UserModel;
