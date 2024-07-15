@@ -1,11 +1,15 @@
 const express = require("express");
-const UserRouter = express.Router();
-const { getAllUserHandler, createuserHandler, getUserById, deleteUserById } = require("../controller/UserController")
-const {checkInput}=require("../controller/middleWares")
+const userRouter = express.Router();
+const {
+  getUserHandler,
+  getuserById,
+  updateUserById,
+  deleteUserById,
+} = require("../controller/UserController");
 
-UserRouter.get("/", getAllUserHandler);
-// chaining
-UserRouter.post("/", checkInput, createuserHandler);
-UserRouter.get("/:userId", getUserById);
-UserRouter.delete("/:userId", deleteUserById);
-module.exports = UserRouter;
+userRouter.get("/", getUserHandler);
+userRouter.get("/:id", getuserById);
+userRouter.patch("/:id", updateUserById);
+userRouter.delete("/:id", deleteUserById);
+
+module.exports = userRouter;

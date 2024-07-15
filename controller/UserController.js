@@ -1,14 +1,30 @@
-const { getByIdFactory,
-    getAllFactory,
-    createFactory,
-    deleteByIdFactory } = require("../utility/crudFactory");
-const UserModel = require("../models/userModels");
-/*********************users********************/ 
-const getAllUserHandler = getAllFactory(UserModel);
-const createuserHandler = createFactory(UserModel);
-const getUserById = getByIdFactory(UserModel);
-const deleteUserById = deleteByIdFactory(UserModel);
+const User = require("../models/userModel");
+// const { emailBuilder } = require("../nodemailer");
+const {
+  checkInput,
+  getAllFactory,
+  createFactory,
+  getElementByIdFactory,
+  updateElementByIdFactory,
+  deleteElementByIdFactory,
+} = require("../utility/crudFactory");
+
+/** handlers */
+/** route handlers */
+
+const createUserhandler = createFactory(User);
+const getUserHandler = getAllFactory(User);
+const getuserById = getElementByIdFactory(User);
+const updateUserById = updateElementByIdFactory(User);
+const deleteUserById = deleteElementByIdFactory(User);
+
+
 
 module.exports = {
-    getAllUserHandler, createuserHandler, getUserById, deleteUserById
-}
+  getUserHandler,
+  createUserhandler,
+  getuserById,
+  updateUserById,
+  deleteUserById,
+  checkInput
+};

@@ -1,94 +1,116 @@
-const createFactory = (ElementModel) => {
-    return async function (req, res) {
-        try {
-            const elementDetails = req.body;
-            // adding element to the file 
-            const element = await ElementModel.create(elementDetails);
+const getAllFactory = (elementModel) => async (req, res) => {
+    console.log("get all factory for",elementModel)
+  try {
+    const data = await elementModel.find();
+    if (data.length === 0) {
+      throw new Error("No data found");
+    } else {
+      res.status(200).json({
+        message: "Data found",
+        data: data,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    });
+  }
+};
 
-            res.status(200).json({
-                status: "successfull",
-                message: `added  the element `,
-                element: element
-            })
-        } catch (err) {
-            res.status(500).json({
-                status: "failure",
-                message: err.message
-            })
-        }
+const createFactory = (elementModel) => async (req, res) => {
+  try {
+    console.log("creating products")
+    const elementDetails = req.body;
+    const data = await elementModel.create(elementDetails);
+    console.log("executed creation")
+    res.status(200).json({
+      message: "Data created",
+      data: data,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    });
+  }
+};
+
+const getElementByIdFactory = (elementModel) => async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const data = await elementModel.findById(id);
+    console.log("data", data  )
+    if (data == undefined) {
+      throw {message:"no data found",statusCode:501};
+    } else {
+      res.status(200).json({
+        message: "Data found",
+        data: data,
+      });
+    }
+  } 
+  
+  catch (err) {
+    // res.status(500).json({
+    //   status: 500,
+    //   message: err.message,
+    // });
+    next(err)
+  }
+};
+
+const checkInput = function (req, res, next) {
+  console.log("req methid", req.method);
+  const productDetails = req.body;
+  const isEmpty = Object.keys(productDetails).length === 0;
+  if (isEmpty) {
+    res.status(400).json({
+      status: 400,
+      message: "Body cannot be empty",
+    });
+  } else {
+    next();
+  }
+};
+
+const deleteElementByIdFactory = (elementModel) => async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = await elementModel.findByIdAndDelete(id);
+    if (data) {
+      res.status(200).json({
+        message: "Data deleted",
+        data: data,
+      });
+    } else {
+      throw new Error("No data found");
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    });
+  }
+};
+
+const updateElementByIdFactory = (elementModel) => async (req, res) => {
+    try{
+
+    }catch(err){
+        res.status(500).json({
+            status: 500,
+            message: err.message,
+          });
 
     }
 }
 
-const getAllFactory = (ElementModel) => {
-    return async function (req, res) {
-        try {
-            console.log("I am inside  get method");
-            const elementDataStore = await ElementModel.find();
-            if (elementDataStore.length == 0) {
-                throw new Error("No elements are present")
-            }
-            res.status(200).json({
-                status: "success",
-                message: elementDataStore
-            })
-        } catch (err) {
-            res.status(404).json({
-                status: "failure",
-                message: err.message
-            })
-        }
-
-    }
-}
-
-const getByIdFactory = (ElementModel) => {
-    return async function (req, res) {
-        try {
-            const elementId = req.params.elementId;
-            const elementDetails = await ElementModel.findById(elementId);
-
-            if (elementDetails == "no element found") {
-                throw new Error(`element with ${elementId} not found`);
-            } else {
-                res.status(200).json({
-                    status: "successfull",
-                    message: elementDetails
-                })
-            }
-        } catch (err) {
-            res.status(404).json({
-                status: "failure",
-                message: err.message
-            })
-        }
-    }
-}
-const deleteByIdFactory = (ElementModel) => {
-    return async function (req, res) {
-        let { elementId } = req.params;
-        try {
-            let element = await ElementModel.findByIdAndDelete(elementId);
-            res.status(200).json({
-                status: "successfull element deleted",
-                message: element
-            });
-        } catch (err) {
-            console.error(err);
-            res.status(500).json({
-                status: "failure",
-                message: err.message
-
-            });
-        }
-    }
-}
-
-module.exports =
-{
-    createFactory,
+module.exports = {
     getAllFactory,
-    getByIdFactory,
-    deleteByIdFactory
-
+    createFactory,
+    getElementByIdFactory,
+    deleteElementByIdFactory,
+    checkInput,
+    updateElementByIdFactory
 }
