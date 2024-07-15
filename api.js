@@ -17,6 +17,7 @@ mongoose
 
 const app = express();
 const UserRouter = require("./router/userRouter");
+const ProductRouter = require("./router/productRouter");
 
 app.use(express.json());
 app.use("/api/user", UserRouter);
