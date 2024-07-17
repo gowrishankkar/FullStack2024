@@ -18,6 +18,7 @@ mongoose
 const app = express();
 const UserRouter = require("./router/userRouter");
 const ProductRouter = require("./router/productRouter");
+const authRouter = require("./routes/authRouter");
 
 app.use(express.json());
 
@@ -53,6 +54,7 @@ app.use("/search", async function (req, res) {
 
 app.use("/api/user", UserRouter);
 app.use("/api/product", ProductRouter);
+app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

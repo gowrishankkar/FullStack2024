@@ -6,8 +6,11 @@ const {
   updateUserById,
   deleteUserById,
 } = require("../controller/UserController");
+const { protectRoute, isAdmin } = require("../controllers/authController");
 
-userRouter.get("/", getUserHandler);
+userRouter.use(protectRoute);
+
+userRouter.get("/", isAdmin, getUserHandler);
 userRouter.get("/:id", getuserById);
 userRouter.patch("/:id", updateUserById);
 userRouter.delete("/:id", deleteUserById);
