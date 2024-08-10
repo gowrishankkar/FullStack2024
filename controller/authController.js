@@ -62,9 +62,6 @@ const forgetPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  // user send the token and the new password
-  // verify that the token is valid
-  // update the user's password
   try {
     const { token, password, email } = req.body;
     const { userId } = req.params;
@@ -134,8 +131,6 @@ async function signUpHandler(req, res) {
 }
 
 async function loginHandler(req, res, next) {
-  // validate credentials
-  // send token
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
