@@ -5,7 +5,7 @@ const {
   getuserById,
   updateUserById,
   deleteUserById,
-} = require("../controller/UserController");
+} = require("../controllers/UserController");
 const { protectRoute, isAdmin } = require("../controllers/authController");
 
 userRouter.use(protectRoute);

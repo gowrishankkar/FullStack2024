@@ -9,7 +9,7 @@ const {
   deleteProductById,
   getProductCategories,
 } = require("../controllers/productController");
-const { checkInput } = require("../utils/crudFactory");
+const { checkInput } = require("../utility/crudFactory");
 const { protectRoute, isAuthorized } = require("../controllers/authController");
 
 const authorizedProductRoles = ["admin", "ceo", "sales"];

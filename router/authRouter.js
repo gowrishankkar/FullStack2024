@@ -8,8 +8,8 @@ const {
   signUpHandler,
   logoutHandler,
 } = require("../controllers/authController");
-const { checkInput } = require("../utils/crudFactory");
-s
+const { checkInput } = require("../utility/crudFactory");
+
 /** routes for authentication */
 authRouter.post("/signup", checkInput, signUpHandler);
 authRouter.post("/login", loginHandler);
