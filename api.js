@@ -1,5 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const rateLimit = require("express-rate-limit");
+const mongoSanitize = require("express-mongo-sanitize");
+
+/**routers */
+
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
 require("dotenv").config();
 
 const DB = process.env.DATABASE;
@@ -15,6 +23,17 @@ mongoose
     console.log("mongo error", error);
   });
 
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+	standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+	// store: ... , // Use an external store for consistency across multiple server instances.
+})
+
+// Apply the rate limiting middleware to all requests.
+
 const app = express();
 const UserRouter = require("./router/userRouter");
 const ProductRouter = require("./router/productRouter");
@@ -23,6 +42,11 @@ const reviewRouter = require("./router/reviewRouter");
 const bookingRouter = require("./router/bookingRouter");
 
 app.use(express.json());
+app.use(cookieParser());
+// app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+app.use(limiter)
+app.use(mongoSanitize());
 
 app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.path}`);
@@ -54,7 +78,7 @@ app.use("/search", async function (req, res) {
   });
 });
 
-app.use("/api/user", UserRouter);
+app.use("/api/user", UserRouter); 
 app.use("/api/product", ProductRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/booking", bookingRouter);
