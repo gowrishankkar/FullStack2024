@@ -35,8 +35,8 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests.
 
 const app = express();
-const UserRouter = require("./router/userRouter");
-const ProductRouter = require("./router/productRouter");
+const userRouter = require("./router/userRouter");
+const productRouter = require("./router/productRouter");
 const authRouter = require("./router/authRouter");
 const reviewRouter = require("./router/reviewRouter");
 const bookingRouter = require("./router/bookingRouter");
@@ -78,8 +78,8 @@ app.use("/search", async function (req, res) {
   });
 });
 
-app.use("/api/user", UserRouter); 
-app.use("/api/product", ProductRouter);
+app.use("/api/user", userRouter); 
+app.use("/api/product", productRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/booking", bookingRouter);
 app.use("/api/reviews", reviewRouter);

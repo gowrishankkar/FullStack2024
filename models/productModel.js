@@ -1,80 +1,85 @@
 const mongoose = require("mongoose");
-const newProductSchemaRules = {
-    name: {
-        type: String,
-        // error handling 
-        required: [true, "kindly pass the name"],
-        unique: [true, "product name should be unique"],
-        maxlength: [40, "Your product length is more than 40 characters"],
-    },
-    brand: {
-        type: String,
-        required: [true, "Please Enter The brand name"],
 
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, "Product name is required"],
+    unique: [true, "Product name should be unique"],
+    maxLength: [40, "Product name should not exceed 40 characters"],
+  },
+  price: {
+    type: Number,
+    required: [true, "Product price is required"],
+    validate: {
+      validator: function () {
+        return this.price > 0;
+      },
+      message: "Price should be greater than 0",
     },
-    price: {
-        type: String,
-        required: [true, "kindly pass the price"],
-        validate: {
-            validator: function () {
-                return this.price > 0;
-            },
-            message: "price can't be negatives"
-        }
+  },
+  categories: {
+    required: true,
+    type: [String],
+  },
+  images: [String],
+  averageRating: {
+    type: Number,
+    default: 0,
+    min:0,
+    max:5
+  },
+  discount: {
+    type: Number,
+    validate: {
+      validator: function () {
+        return this.discount < this.price;
+      },
+      message: "Discount should be less than price",
     },
-    categories: {
-        type: [String],
-        required: true,
+  },
+  description: {
+    type: String,
+    required: [true, "Product description is required"],
+    maxLength: [200, "Product description should not exceed 200 characters"],
+  },
+  stock: {
+    type: Number,
+    required: [true, "Product stock is required"],
+    validate: {
+      validator: function () {
+        return this.stock >= 0;
+      },
+      message: "Stock should be grater than equal to 0",
     },
-    productImages: {
-        type: [String]
-    },
-    averageRating: Number,
-    discount: {
-        type: Number,
-        validate: {
-            validator: function () {
-                return this.discount < this.price;
-            },
-            message: "Discount must be less than actual price",
-        },
-    },
-    description: {
-        type: String,
-        required: [true, "kindly add desc"],
-        maxlength: [2000, "description can't be bigger then 2000 characters"]
-    },
-    stock: {
-        type: String,
-        required: [true, "You should enter stock of the product should be atleast 0"],
-        validate: function () {
-            return this.stock >= 0;
-        },
-        message: "stock_quantity should can't be negative "
-    },
+  },
+  brand: {
+    type: String,
+    required: [true, "Product brand is required"],
+  },
+  reviews:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:"Review"
+  },
 
-}
+});
 
-const productSchema = new mongoose.Schema(newProductSchemaRules);
-
-
-let validCategories = ['Electronics', "Audio", 'Clothing', 'Accessories',"Shoes"];
+const validCategories = ["electronics", "clothes", "furniture", "stationery"];
 
 productSchema.pre("save", function (next) {
-    const product = this;
-    const invalidCategoriesArr = product.categories
-        .filter(category => {
-            return !validCategories.includes(category)
+  console.log("pre save hook");
+  const invalidCategories = this.categories.filter((category) => {
+    return !validCategories.includes(category);
+  });
+  if (invalidCategories.length) {
+    return next(new Error(`Invalid categories ${invalidCategories.join(" ")}`));
+  } else {
+    next();
+  }
+});
+productSchema.post("save", function () {
+  console.log("post save hook");
+});
 
-        })
-    if (invalidCategoriesArr.length > 0) {
-        const err = new Error(`product from ${invalidCategoriesArr[0]}  categories are not being accepted  right now`);
-        return next(err);
-    } else {
-        next();
-    }
+const Product = mongoose.model("Product", productSchema);
 
-})
-
-const ProductModel = mongoose.model("newProductModel", productSchema);
-module.exports = ProductModel;
+module.exports = Product;
