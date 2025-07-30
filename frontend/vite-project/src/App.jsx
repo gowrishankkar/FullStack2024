@@ -36,16 +36,22 @@ function App() {
           <Route element={<RequireAuth></RequireAuth>}>
             <Route path="/cart" element={<Cart></Cart>}></Route>
           </Route>
-          <Route
-            path="/product/:id"
-            element={<ProductDetails></ProductDetails>}
-          >
-            {" "}
+          <Route element={<RequireAuth></RequireAuth>}>
+            <Route
+              path="/product/:id"
+              element={<ProductDetails></ProductDetails>}
+            >
+              {" "}
+            </Route>
           </Route>
-          <Route path="/user" element={<User></User>}>
-            {" "}
+          <Route element={<RequireAuth></RequireAuth>}>
+            <Route path="/user" element={<User></User>}>
+              {" "}
+            </Route>
           </Route>
-          <Route path="/home" element={<Navigate to="/"></Navigate>}></Route>
+          <Route element={<RequireAuth></RequireAuth>}>
+            <Route path="/home" element={<Navigate to="/"></Navigate>}></Route>
+          </Route>
           <Route path="*" element={<PageNotFound></PageNotFound>}>
             {" "}
           </Route>

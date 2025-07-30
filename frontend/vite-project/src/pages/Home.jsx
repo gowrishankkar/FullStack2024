@@ -9,37 +9,31 @@ import basicOps from "../utility/basicOps";
 import { usePaginationContext } from "../contexts/PaginationContext";
 import axios from "axios";
 import URL from "../urlConfig";
+import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { Pagination, Stack } from "@mui/material";
 
 function Home() {
-  // preserver -> pagination
-  /***single source of truth for all the products***/
   const [products, setProducts] = useState([]);
-  /************ all the categories -> a product**********/
   const [categories, setCategories] = useState([]);
-  /**********Action***********/
-  /*********************** state ->term with which you want to filter the product list*****************************/
   const [searchTerm, setSearchTerm] = useState("");
-  /**************************sort : 0 : unsorted , 1: incresing order , -1 : decreasing order ************************************/
   const [sortDir, setsortDir] = useState(0);
-  /**************************** currcategory : category group you result **********************************/
   const [currCategory, setCurrCategory] = useState("All categories");
-  // page num and page size
   const { pageSize, pageNum, setPageNum, setPageSize } = usePaginationContext();
-  /****************get all the products*********************/
-  useEffect(() => {
+
+  const onPageChange = useEffect(() => {
     (async function () {
       // const resp = await fetch(`https://fakestoreapi.com/products`)
       const productData = await axios.get(URL.GET_PRODUCTS);
       const productArr = productData.data.data;
       const productList = productArr.map((product) => {
-        return{
-            id:product._id,
-            title:product.name,
-            image:product.images[0],
-            price:product.price,
-            ...product
-        }
-      })
+        return {
+          id: product._id,
+          title: product.name,
+          image: product.images[0],
+          price: product.price,
+          ...product,
+        };
+      });
       console.log(productList);
 
       // const productData = await resp.json();
@@ -71,14 +65,16 @@ function Home() {
       {/* header */}
       <header className="nav_wrapper">
         <div className="search_sortWrapper">
-          <input
-            className="search_input"
-            type="text"
+          <TextField
+            variant="outlined"
+            fullWidth
+            placeholder="Search for products..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
               setPageNum(1);
             }}
+            sx={{ maxWidth: 500, backgroundColor: "white", borderRadius: 1 }}
           />
           <div className="icons_container">
             <ArrowCircleUpIcon
@@ -115,44 +111,18 @@ function Home() {
       </main>
       {/* pagination */}
       <div className="pagination">
-        <button
-          onClick={() => {
-            if (pageNum == 1) return;
-            setPageNum((pageNum) => pageNum - 1);
-          }}
-          disabled={pageNum == 1 ? true : false}
-        >
-          <KeyboardArrowLeftIcon fontSize="large"></KeyboardArrowLeftIcon>
-        </button>
-        <div className="pagenum">{pageNum}</div>
-        <button
-          onClick={() => {
-            if (pageNum == totalPages) return;
-            setPageNum((pageNum) => pageNum + 1);
-          }}
-          disabled={pageNum == totalPages ? true : false}
-        >
-          <ChevronRightIcon fontSize="large"></ChevronRightIcon>
-        </button>
+        <Stack spacing={2} alignItems="center" sx={{ mt: 3 }}>
+          <Pagination
+            count={totalPages}
+            page={pageNum}
+            onChange={(event, value) => setPageNum(value)}
+            color="primary"
+            size="large"
+          />
+        </Stack>
       </div>
     </>
   );
 }
 
 export default Home;
-
-/***
- * 1. Steps/
- *  - INtial Data
- *  a. Searching
- *  b. Sorting
- *  c. Categorization
- *  d. Pagination
- *  e. Render the Results
- *
- * 2. Data
- *      1. Products
- *      2. Categories
- *
- *
- * **/

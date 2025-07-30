@@ -18,7 +18,7 @@ function Routing() {
             </nav>
             <Routes>
                 <Route path="/home/" element={<Home></Home>}></Route>
-                <Route path="/about/*" element={<About></About>}> </Route>
+                <Route path="/about" element={<About></About>}> </Route>
                 <Route path="/listing" element={<Listing></Listing>}></Route>
                 <Route path="/abc" element={<Navigate to="/home"></Navigate>}></Route>
                 {/* template routes -> dynamic routes  */}

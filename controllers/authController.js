@@ -1,6 +1,7 @@
 const User = require("../models/userModel");
 const { emailBuilder } = require("../nodemailer");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const SECRET_KEY = "RandomKey12321@4564546";
 
@@ -11,7 +12,7 @@ const protectRoute = async function (req, res, next) {
 
     if (decoded) {
       const userId = decoded.data;
-      req.userId = userId; 
+      req.userId = userId;
       next();
     }
   } catch (err) {
@@ -140,7 +141,11 @@ async function loginHandler(req, res, next) {
         message: "user not found",
       });
     } else {
-      if (user.password === password) {
+      console.log("user.password ", typeof user.password);
+      console.log("password ", typeof password);
+      const hashedPassword = await bcrypt.hash(user.password, 12);
+      console.log("password ", hashedPassword, user.password === password);
+      if (user.password.toString() === password.toString()) {
         const token = jwt.sign({ data: user._id }, SECRET_KEY);
         res.cookie("token", token, {
           maxAge: 1000 * 60 * 60 * 24,
@@ -149,6 +154,7 @@ async function loginHandler(req, res, next) {
         res.json({
           message: "login successfull",
           data: user,
+          token,
           user: {
             name: user.name,
             email: user.email,

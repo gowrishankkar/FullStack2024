@@ -36,23 +36,29 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
-  bookings:{
-    type:[mongoose.Schema.Types.ObjectId],
-    ref:"Booking"
-  }
+  bookings: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Booking",
+  },
 });
 
 const validRoles = ["admin", "user", "seller"];
 
 /** pre hooks */
 userSchema.pre("save", async function (next) {
-  if(this.password !== this.confirmPassword){
+  console.log("updated,", this.password, this.confirmPassword);
+  if (
+    this.confirmPassword &&
+    this.password &&
+    this.password !== this.confirmPassword
+  ) {
     next(new Error("Password and confirm password should be same"));
   }
+  console.log("updated,", this.password, this.confirmPassword);
   this.confirmPassword = undefined;
-  const hashedPassword = await bcrypt.hash(this.password,12)
-  this.password = hashedPassword;
-  console.log("updated,", this.password, hashedPassword)
+  const hashedPassword = await bcrypt.hash(this.password, 12);
+  // this.password = hashedPassword;
+
   if (this.role) {
     const isValid = validRoles.includes(this.role);
     if (!isValid) {
@@ -60,7 +66,7 @@ userSchema.pre("save", async function (next) {
     } else {
       next();
     }
-  } else{
+  } else {
     this.role = "user";
     next();
   }
