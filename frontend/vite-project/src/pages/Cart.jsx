@@ -10,34 +10,25 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { action } from "../redux/slices/cartSlice";
 
 const Cart = () => {
-  const cartState = useSelector((store) => {
+  const cart = useSelector((store) => {
     return store.cartReducer.cartProducts;
   });
-  const [cart, setCart] = useState(cartState);
-  const handleIncrease = (id) => {
-    setCart(
-      cart.map((item) =>
-        item.id === id ? { ...item, indQuantity: item.indQuantity + 1 } : item
-      )
-    );
-  };
-
-  const handleDecrease = (id) => {
-    setCart(
-      cart.map((item) =>
-        item.id === id && item.indQuantity > 1
-          ? { ...item, indQuantity: item.indQuantity - 1 }
-          : item
-      )
-    );
-  };
-
-  const handleRemove = (id) => {
-    setCart(cart.filter((item) => item.id !== id));
-  };
+    const dispatch = useDispatch();
+    const handleIncrease = (product) => {
+      dispatch(action.addToCart(product));
+    };
+  
+    const handleDecrease = (product) => {
+      dispatch(action.deleteFromCart(product));
+    };
+  
+    const handleRemove = (product) =>{
+       dispatch(action.removeFromCart(product));
+    }
 
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.indQuantity,
@@ -79,20 +70,20 @@ const Cart = () => {
                     </Typography>
                   </CardContent>
                   <Button
-                    onClick={() => handleDecrease(item.id)}
+                    onClick={() => handleDecrease(item)}
                     variant="outlined"
                   >
                     -
                   </Button>
                   <Typography sx={{ mx: 2 }}>{item.indQuantity}</Typography>
                   <Button
-                    onClick={() => handleIncrease(item.id)}
+                    onClick={() => handleIncrease(item)}
                     variant="outlined"
                   >
                     +
                   </Button>
                   <IconButton
-                    onClick={() => handleRemove(item.id)}
+                    onClick={() => handleRemove(item)}
                     color="error"
                   >
                     <DeleteIcon />

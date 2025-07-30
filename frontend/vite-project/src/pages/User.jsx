@@ -1,16 +1,22 @@
 import React, { useState } from "react";
-import { Container, Card, CardContent, Typography, TextField, Button, Avatar, Grid, IconButton } from "@mui/material";
+import {
+  Container,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Avatar,
+  Grid,
+  IconButton,
+} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import { useAuth } from "../contexts/AuthProvider";
 
 const UserProfile = () => {
-  const [user, setUser] = useState({
-    name: "Leanne Graham",
-    email: "leanne@example.com",
-    role: "Admin",
-    address: "123 Main Street, Warsaw, Poland",
-    avatar: "https://via.placeholder.com/150",
-  });
+  const { authenticatedUser } = useAuth();
+  const [user, setUser] = useState(authenticatedUser);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -46,7 +52,15 @@ const UserProfile = () => {
               />
               <IconButton component="span">
                 <Avatar src={user.avatar} sx={{ width: 100, height: 100 }} />
-                <CameraAltIcon sx={{ position: "absolute", color: "white", background: "black", borderRadius: "50%", padding: 0.5 }} />
+                <CameraAltIcon
+                  sx={{
+                    position: "absolute",
+                    color: "white",
+                    background: "black",
+                    borderRadius: "50%",
+                    padding: 0.5,
+                  }}
+                />
               </IconButton>
             </label>
           </Grid>
@@ -92,16 +106,27 @@ const UserProfile = () => {
                 onChange={handleInputChange}
                 sx={{ mb: 2 }}
               />
-              <Button variant="contained" color="primary" fullWidth onClick={handleSave}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={handleSave}
+              >
                 Save Changes
               </Button>
             </>
           ) : (
             <>
               <Typography variant="h5">{user.name}</Typography>
-              <Typography variant="body1" color="text.secondary">{user.email}</Typography>
-              <Typography variant="body2" color="text.secondary">{user.role}</Typography>
-              <Typography variant="body2" color="text.secondary">{user.address}</Typography>
+              <Typography variant="body1" color="text.secondary">
+                {user.email}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user.role}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {user.address}
+              </Typography>
 
               <Button
                 variant="outlined"
