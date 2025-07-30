@@ -16,16 +16,17 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSelector } from "react-redux";
-import { useAuth } from "../../contexts/AuthProvider";
+import { useAuth } from "../contexts/AuthProvider";
 
-const { logoutAuthenticatedUser } = useAuth();
+
 
 const NavBar = () => {
   const navigate = useNavigate();
+  const { logoutAuthenticatedUser } = useAuth();
   const quantity = useSelector((store) => {
     return store.cartReducer.cartQuantity;
   });
-  const [cartCount, setCartCount] = useState(3); // Example cart count
+  // const [cartCount, setCartCount] = useState(3); // Example cart count
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMenu, setMobileMenu] = useState(null);
 
@@ -39,6 +40,7 @@ const NavBar = () => {
 
   const logout = () => {
     logoutAuthenticatedUser();
+    navigate("/login");
   };
 
   const handleMobileMenuClick = (event) => {
@@ -88,7 +90,7 @@ const NavBar = () => {
         {/* Cart Icon */}
         <IconButton color="inherit">
           <Badge
-            badgeContent={cartCount}
+            badgeContent={quantity}
             color="error"
             onClick={() => {
               navigate("/cart");

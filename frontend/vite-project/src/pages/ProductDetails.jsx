@@ -10,8 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 
-const ProductDetails = ({ product }) => {
-  //  const productData = await axios.get(`URL.GET_PRODUCTS/${}`);
+const ProductDetails = ({ product = {} }) => {
   const urlParams = new URLSearchParams(window.location.search);
   const myParam = urlParams.get("myParam");
   const params = new URLSearchParams(location.search);
