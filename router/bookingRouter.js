@@ -12,11 +12,12 @@ const instance = new Razorpay({
 
 const bookingRouter = express.Router();
 
-bookingRouter.post("/:productId", protectRoute, async (req, res) => {
+bookingRouter.post("/", protectRoute, async (req, res) => {
   try {
     const userid = req.userId;
-    const product = req.params.productId;
-    const { priceAtBooking } = req.body;
+    // const product = req.params.productId;
+    const { priceAtBooking, product } = req.body;
+    console.log('req', userid, req.params, req.body)
     const bookingObj = {
       user: userid,
       product: product,
@@ -33,13 +34,22 @@ bookingRouter.post("/:productId", protectRoute, async (req, res) => {
       currency: "INR",
       receipt: booking._id.toString(),
     };
-    
+
     const order = await instance.orders.create(options);
     console.log("created order", order);
     /** updating booking with razor pay payment id */
     booking.paymentOrderId = order.id;
     await booking.save();
+    res.status(200).json({
+      status: "success",
+      message: {
+        id: order.id,
+        currency: order.currency,
+        amount: order.amount
+      }
+    })
   } catch (err) {
+
     console.log(err);
   }
 });

@@ -8,6 +8,7 @@ const urlConfig = {
   LOGOUT_URL: `${BASE_URL}/api/auth/logout`,
   GET_PRODUCTS: `${BASE_URL}/api/product`,
   GET_CATEGORIES: `${BASE_URL}/api/product/categories`,
+  BOOKING: `${BASE_URL}/api/booking`,
 };
 
 export default urlConfig;
