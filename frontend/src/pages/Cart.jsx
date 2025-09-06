@@ -21,7 +21,7 @@ const Cart = () => {
   });
   const dispatch = useDispatch();
   const handleIncrease = (product) => {
-    dispatch(action.addToCart(product));
+    dispatch(action.addToCart({product}));
   };
 
   const handleDecrease = (product) => {
@@ -30,35 +30,38 @@ const Cart = () => {
 
   const handleRemove = (product) => {
     dispatch(action.removeFromCart(product));
-  }
+  };
 
   function loadScript() {
     return new Promise(function (resolve, reject) {
-      const script = document.createElement('script')
+      const script = document.createElement("script");
       script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = function () {
         resolve();
       };
       script.onerror = () => {
-        reject()
-      }
+        reject();
+      };
       document.body.appendChild(script);
-    })
-
+    });
   }
 
   const proceedCheckout = async () => {
     // to load the script
     try {
       await loadScript();
-      const resp = await axios.post(urlConfig.BOOKING, {
-        user: 'userid',
-        product: '67df9f7355aad7ce3d7eae85',
-        priceAtBooking: 500
-      }, {
-        withCredentials: true,
-      });
-      console.log(resp, 'resp')
+      const resp = await axios.post(
+        urlConfig.BOOKING,
+        {
+          user: "userid",
+          product: "67df9f7355aad7ce3d7eae85",
+          priceAtBooking: 500,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(resp, "resp");
 
       // const resp = await
       //   fetch("http://localhost:3000/api/booking/",
@@ -78,33 +81,31 @@ const Cart = () => {
       const { id, currency, amount } = respJson.message;
       console.log(id, currency, amount);
 
-
       const options = {
-        key: 'rzp_test_31vDTPUmd3P4xY',
+        key: "rzp_test_31vDTPUmd3P4xY",
         currency,
         amount: amount.toString(),
-        // id over here should be same 
+        // id over here should be same
         order_id: id,
-        name: 'Payment',
-        description: 'Thanks for the payment',
+        name: "Payment",
+        description: "Thanks for the payment",
         handler: function (response) {
-          alert("payment id" + response.razorpay_payment_id)
-          alert("order id " + response.razorpay_order_id)
-          alert(response.razorpay_signature)
+          alert("payment id" + response.razorpay_payment_id);
+          alert("order id " + response.razorpay_order_id);
+          alert(response.razorpay_signature);
         },
         prefill: {
           name: "Jasbir",
           email: "abc@gmail.com",
-          phone_number: '9899999999'
-        }
-      }
+          phone_number: "9899999999",
+        },
+      };
       var rzp1 = new Razorpay(options);
       rzp1.open();
     } catch (err) {
-
-      alert(err.message)
+      alert(err.message);
     }
-  }
+  };
 
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.indQuantity,
@@ -139,10 +140,12 @@ const Cart = () => {
                       borderRadius: 1,
                     }}
                   />
+                
+
                   <CardContent sx={{ flex: 1 }}>
                     <Typography variant="h6">{item.name}</Typography>
                     <Typography variant="body1">
-                      ${item.price} x {item.indQuantity}
+                      Rs {item.price} x {item.indQuantity}
                     </Typography>
                   </CardContent>
                   <Button
@@ -158,10 +161,7 @@ const Cart = () => {
                   >
                     +
                   </Button>
-                  <IconButton
-                    onClick={() => handleRemove(item)}
-                    color="error"
-                  >
+                  <IconButton onClick={() => handleRemove(item)} color="error">
                     <DeleteIcon />
                   </IconButton>
                 </Card>
@@ -169,9 +169,14 @@ const Cart = () => {
             ))}
           </Grid>
           <Typography variant="h5" sx={{ mt: 3 }}>
-            Total: ${totalPrice}
+            Total: Rs {totalPrice}
           </Typography>
-          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => proceedCheckout()}>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+            onClick={() => proceedCheckout()}
+          >
             Proceed to Checkout
           </Button>
         </>

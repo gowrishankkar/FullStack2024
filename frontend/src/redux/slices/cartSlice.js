@@ -11,18 +11,24 @@ const cartSlice = createSlice({
   // all the update logic
   reducers: {
     addToCart: (state, action) => {
-      state.cartQuantity++;
-      const productToBeAdded = action.payload;
+      const { product, quantity } = action.payload;
+      if (quantity && quantity > 0) {
+        state.cartQuantity += quantity;
+      } else {
+        state.cartQuantity++;
+      }
+      const productToBeAdded = product;
       const requiredProduct = state.cartProducts.find((cProduct) => {
         return cProduct.id == productToBeAdded.id;
       });
       if (requiredProduct == undefined) {
-        //quanityt
-        productToBeAdded.indQuantity = 1;
-        state.cartProducts.push(productToBeAdded);
+        // not present
+        state.cartProducts.push({ ...productToBeAdded, indQuantity: quantity ? quantity : 1 });
       } else {
         // already present
-        requiredProduct.indQuantity++;
+        quantity
+          ? quantity + requiredProduct.indQuantity
+          : requiredProduct.indQuantity++;
       }
     },
 

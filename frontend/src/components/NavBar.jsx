@@ -9,6 +9,8 @@ import {
   Badge,
   Menu,
   MenuItem,
+  Box,
+  Grid,
 } from "@mui/material";
 import axios from "axios";
 import URL from "../urlConfig";
@@ -17,8 +19,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSelector } from "react-redux";
 import { useAuth } from "../contexts/AuthProvider";
-
-
+import logo from "../assets/logo.png";
+import { InputBase, Paper } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -65,45 +68,77 @@ const NavBar = () => {
           <MenuIcon />
         </IconButton>
 
-        {/* Logo */}
-        <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          E-Commerce
-        </Typography>
-
-        {/* Desktop Navigation */}
-        <Button
-          color="inherit"
-          onClick={() => {
-            navigate("/home");
-          }}
-          sx={{ display: { xs: "none", md: "block" } }}
+        <Grid
+          container
+          spacing={2}
+          justifyContent="space-between"
+          alignItems="center"
         >
-          Home
-        </Button>
-        {/* <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
-          Products
-        </Button>
-        <Button color="inherit" sx={{ display: { xs: "none", md: "block" } }}>
-          Contact
-        </Button> */}
-
-        {/* Cart Icon */}
-        <IconButton color="inherit">
-          <Badge
-            badgeContent={quantity}
-            color="error"
+          {/* Logo */}
+          <Box
+            component="img"
             onClick={() => {
-              navigate("/cart");
+              navigate("/home");
+            }}
+            src={logo}
+            alt="GSP"
+            sx={{ width: 80, height: 80 }}
+          />
+
+          {/* <Paper
+            component="form"
+            sx={{
+              p: "2px 8px",
+              display: "flex",
+              alignItems: "center",
+              width: 250,
+              borderRadius: "999px",
+              backgroundColor: "#f7f7f7",
+              boxShadow: "none",
             }}
           >
-            <ShoppingCartIcon />
-          </Badge>
-        </IconButton>
+            <SearchIcon sx={{ color: "#888", mr: 1 }} />
+            <InputBase
+              placeholder="Search"
+              inputProps={{ "aria-label": "search" }}
+              sx={{
+                flex: 1,
+                fontSize: "0.9rem",
+              }}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setPageNum(1);
+              }}
+            />
+          </Paper> */}
 
-        {/* User Profile */}
-        <IconButton color="inherit" onClick={handleProfileClick}>
-          <AccountCircleIcon />
-        </IconButton>
+          {/* Desktop Navigation */}
+          <Grid
+            item
+            sx={{
+              display: { xs: "none", md: "flex" },
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <IconButton color="inherit">
+              <Badge
+                badgeContent={quantity}
+                color="error"
+                onClick={() => {
+                  navigate("/cart");
+                }}
+              >
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
+            {/* User Profile */}
+            <IconButton color="inherit" onClick={handleProfileClick}>
+              <AccountCircleIcon />
+            </IconButton>
+          </Grid>
+        </Grid>
 
         {/* Profile Menu */}
         <Menu

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Grid,
@@ -9,14 +9,35 @@ import {
   Button,
   TextField,
 } from "@mui/material";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import URL from "../urlConfig";
+import { action } from "../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
-const ProductDetails = ({ product = {} }) => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const myParam = urlParams.get("myParam");
-  const params = new URLSearchParams(location.search);
-  console.log("myParam", myParam, urlParams, params);
-  const { name, price, description, image } = product;
-  const [quantity, setQuantity] = useState(1);
+const ProductDetails = () => {
+  const [product, setProduct] = useState({});
+    const [quantity, setQuantity] = useState(1);
+  const { id } = useParams();
+    const dispatch = useDispatch();
+
+  const fetchProduct = async () => {
+    try {
+      const response = await axios.get(`${URL.GET_PRODUCTS}/${id}`);
+      if (response.status === 200) {
+        setProduct(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProduct();
+  }, []);
+
+  const { name, price, description, images = [] } = product;
+
 
   const handleQuantityChange = (event) => {
     const value = Math.max(1, parseInt(event.target.value) || 1);
@@ -24,7 +45,8 @@ const ProductDetails = ({ product = {} }) => {
   };
 
   const handleAddToCart = () => {
-    alert(`${quantity} ${name}(s) added to cart!`);
+    dispatch(action.addToCart({ product, quantity }));
+   setQuantity(1);
   };
 
   return (
@@ -35,8 +57,8 @@ const ProductDetails = ({ product = {} }) => {
           <Card>
             <CardMedia
               component="img"
-              height="400"
-              image={image || "https://via.placeholder.com/400"}
+              height="450"
+              image={images[0] || "https://via.placeholder.com/400"}
               alt={name}
               sx={{ objectFit: "contain" }}
             />
@@ -50,7 +72,7 @@ const ProductDetails = ({ product = {} }) => {
               {name}
             </Typography>
             <Typography variant="h5" color="primary">
-              ${price}
+              Rs {price}
             </Typography>
             <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
               {description}

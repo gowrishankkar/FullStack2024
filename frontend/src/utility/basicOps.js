@@ -28,7 +28,8 @@ export default function basicOps(products, searchTerm, sortDir, currCategory, pa
     let filteredSortedgroupByArr = filteredSortedArr;
     if (currCategory != "All categories") {
         filteredSortedgroupByArr = filteredSortedgroupByArr.filter((product) => {
-            return product.category == currCategory
+            console.log(product.categories, currCategory)
+            return product.categories.includes(currCategory);
         })
     }
 

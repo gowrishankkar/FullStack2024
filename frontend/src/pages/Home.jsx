@@ -11,6 +11,8 @@ import axios from "axios";
 import URL from "../urlConfig";
 import { TextField, InputAdornment, IconButton } from "@mui/material";
 import { Pagination, Stack } from "@mui/material";
+import { InputBase, Paper, Grid } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 function Home() {
   const [products, setProducts] = useState([]);
@@ -62,23 +64,45 @@ function Home() {
   const totalPages = object.totalPages;
   return (
     <>
-      {/* header */}
-      <header className="nav_wrapper">
-        <div className="search_sortWrapper">
-          <TextField
-            variant="outlined"
-            fullWidth
-            placeholder="Search for products..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setPageNum(1);
-            }}
-            sx={{ maxWidth: 500, backgroundColor: "white", borderRadius: 1 }}
-          />
-          <div className="icons_container">
+      <Grid
+        container
+        spacing={2}
+        justifyContent="space-evenly"
+        style={{ alignItems: "center", marginTop: "10px" }}
+      >
+        <Grid item container alignItems="center" spacing={2} xs={3} md="auto">
+          <Grid item>
+            <Paper
+              component="form"
+              sx={{
+                p: "2px 8px",
+                display: "flex",
+                alignItems: "center",
+                width: 250,
+                borderRadius: "999px",
+                backgroundColor: "#fafcfdff",
+                boxShadow: "none",
+                border: "0.5px solid #acaaaaff",
+              }}
+            >
+              <SearchIcon sx={{ color: "#888", mr: 1 }} />
+              <InputBase
+                placeholder="Search"
+                inputProps={{ "aria-label": "search" }}
+                sx={{
+                  flex: 1,
+                  fontSize: "0.9rem",
+                }}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPageNum(1);
+                }}
+              />
+            </Paper>
+          </Grid>
+          <Grid item>
             <ArrowCircleUpIcon
-              style={{ color: "white" }}
+              style={{ color: "blue" }}
               fontSize="large"
               onClick={() => {
                 setsortDir(1);
@@ -87,27 +111,32 @@ function Home() {
             ></ArrowCircleUpIcon>
             <ArrowCircleDownIcon
               fontSize="large"
-              style={{ color: "white" }}
+              style={{ color: "blue" }}
               onClick={() => {
                 setsortDir(-1);
                 setPageNum(1);
               }}
             ></ArrowCircleDownIcon>
-          </div>
-        </div>
-
-        <div className="categories_wrapper">
+          </Grid>
+        </Grid>
+        <Grid item xs={9} md="auto">
           <Categories
             categories={categories}
             setCurrCategory={setCurrCategory}
+            currCategory={currCategory}
           ></Categories>
-        </div>
-      </header>
+        </Grid>
+      </Grid>
 
       {/* main area  */}
       <main className="product_wrapper">
         {/* products will be there */}
-        <ProductList productList={filteredSortedgroupByArr}> ̰</ProductList>
+        <ProductList
+          productList={filteredSortedgroupByArr}
+          currCategory={currCategory}
+        >
+           ̰
+        </ProductList>
       </main>
       {/* pagination */}
       <div className="pagination">

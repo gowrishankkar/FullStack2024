@@ -2,6 +2,7 @@ import React,{useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import urlConfig from "../../urlConfig";
+import CircularProgress from '@mui/material/CircularProgress';
 import "./signup.css";
 
 function Signup() {
@@ -36,7 +37,9 @@ function Signup() {
         }
     }
     if(loading){
-        return <div>Loading...</div>
+        return ( <Box sx={{ display: 'flex' }}>
+      <CircularProgress />
+    </Box>)
     }
 
   return (

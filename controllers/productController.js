@@ -17,7 +17,7 @@ const deleteProductById = deleteElementByIdFactory(Product);
 const getProductCategories = async function(req, res) {
   res.json({
     message: "categories",
-    data: ["electronics", "jewelery", "men's clothing", "women's clothing"]
+    data: ["Electronics", "Jewelery", "Clothing", "Fitness", "Books", "Furniture"],
   });
 }
 

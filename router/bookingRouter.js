@@ -29,8 +29,8 @@ bookingRouter.post("/", protectRoute, async (req, res) => {
     user.bookings.push(booking._id);
     await user.save();
 
-    var options = {
-      amount: priceAtBooking * 100, // amount in the smallest currency unit
+    let options = {
+      amount: priceAtBooking, // amount in the smallest currency unit
       currency: "INR",
       receipt: booking._id.toString(),
     };
