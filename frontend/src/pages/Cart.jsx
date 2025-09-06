@@ -131,7 +131,7 @@ const Cart = () => {
                 >
                   <CardMedia
                     component="img"
-                    image={item.image}
+                    image={item.images[0]}
                     alt={item.name}
                     sx={{
                       width: 100,

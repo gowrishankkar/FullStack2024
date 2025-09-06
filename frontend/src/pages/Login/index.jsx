@@ -4,6 +4,7 @@ import "./login.css";
 import axios from "axios";
 import urlConfig from "../../urlConfig";
 import { useAuth } from "../../contexts/AuthProvider";
+import { Box, CircularProgress } from "@mui/material";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ function Login() {
       setEmail("");
       setPassword("");
       navigate("/");
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
     } catch (err) {
       setErrMsg(err.message);
       console.log(err);
@@ -40,7 +41,20 @@ function Login() {
   };
 
   if (loading) {
-    return <h1>Loading...</h1>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh", // full screen height
+          gap: 2,
+        }}
+      >
+        <CircularProgress size={60} thickness={4} />
+      </Box>
+    );
   }
   return (
     <div className="signinscreen">

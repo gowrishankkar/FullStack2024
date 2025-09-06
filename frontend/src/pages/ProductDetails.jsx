@@ -8,18 +8,20 @@ import {
   Typography,
   Button,
   TextField,
+  Rating,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import URL from "../urlConfig";
 import { action } from "../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
+import Review from "../components/Review";
 
 const ProductDetails = () => {
   const [product, setProduct] = useState({});
-    const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(1);
   const { id } = useParams();
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const fetchProduct = async () => {
     try {
@@ -36,8 +38,15 @@ const ProductDetails = () => {
     fetchProduct();
   }, []);
 
-  const { name, price, description, images = [] } = product;
-
+  const {
+    name,
+    price,
+    description,
+    images = [],
+    reviews = [],
+    averageRating,
+    brand = "",
+  } = product;
 
   const handleQuantityChange = (event) => {
     const value = Math.max(1, parseInt(event.target.value) || 1);
@@ -46,7 +55,14 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     dispatch(action.addToCart({ product, quantity }));
-   setQuantity(1);
+    setQuantity(1);
+  };
+
+  const sampleReview = {
+    user: "John Doe",
+    rating: 5,
+    comment: "Amazing product! Quality is top-notch and delivery was fast.",
+    date: "2025-08-25",
   };
 
   return (
@@ -71,9 +87,19 @@ const ProductDetails = () => {
             <Typography variant="h4" gutterBottom>
               {name}
             </Typography>
+            <Typography variant="h6" gutterBottom>
+              Brand : {brand}
+            </Typography>
+            <Rating
+              name="star-rating"
+              value={averageRating || 0}
+              precision={0.5}
+              readOnly
+            />
             <Typography variant="h5" color="primary">
               Rs {price}
             </Typography>
+
             <Typography variant="body1" sx={{ mt: 2, color: "text.secondary" }}>
               {description}
             </Typography>
@@ -101,6 +127,21 @@ const ProductDetails = () => {
           </CardContent>
         </Grid>
       </Grid>
+
+      {reviews?.length > 0 && (
+        <Grid container spacing={2} sx={{ mt: 4 }} direction={"column"}>
+          <Grid item>
+            <Typography variant="h5" gutterBottom>
+              Reviews
+            </Typography>
+          </Grid>
+          {reviews.map((review, index) => (
+            <Grid item xs={12} key={index}>
+              <Review review={review} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
     </Container>
   );
 };

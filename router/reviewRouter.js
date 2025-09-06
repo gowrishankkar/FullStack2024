@@ -27,6 +27,7 @@ reviewRouter.post("/:productId", protectRoute, async (req, res) => {
     });
     /** update review on the product */
     const productObj = await Product.findById(productId);
+    console.log('productObj', productObj);
     const averageRating = productObj.averageRating;
     if (averageRating) {
       const sum = averageRating * productObj.reviews.length; // 4.5 * 2 = 9

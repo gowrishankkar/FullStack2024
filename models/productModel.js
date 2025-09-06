@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 
+const reviewSchema = new mongoose.Schema({
+  user: { type: String },
+  rating: { type: Number, default: 1 },
+  comment: { type: String },
+  date: { type: Date, default: Date.now },
+});
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -25,8 +32,8 @@ const productSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
     default: 0,
-    min:0,
-    max:5
+    min: 0,
+    max: 5,
   },
   discount: {
     type: Number,
@@ -56,11 +63,10 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Product brand is required"],
   },
-  reviews:{
-    type:[mongoose.Schema.Types.ObjectId],
-    ref:"Review"
+  reviews: {
+    type: [reviewSchema],
+    ref: "Review",
   },
-
 });
 
 const validCategories = ["Electronics", "clothes", "furniture", "stationery"];
