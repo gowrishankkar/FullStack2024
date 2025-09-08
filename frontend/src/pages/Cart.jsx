@@ -14,14 +14,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { action } from "../redux/slices/cartSlice";
 import axios from "axios";
 import urlConfig from "../urlConfig";
+import { useAuth } from "../contexts/AuthProvider";
 
 const Cart = () => {
+  const savedUser = sessionStorage.getItem("user");
+  const parsedUser = JSON.parse(savedUser);
   const cart = useSelector((store) => {
     return store.cartReducer.cartProducts;
   });
   const dispatch = useDispatch();
   const handleIncrease = (product) => {
-    dispatch(action.addToCart({product}));
+    dispatch(action.addToCart({ product }));
   };
 
   const handleDecrease = (product) => {
@@ -46,16 +49,21 @@ const Cart = () => {
     });
   }
 
-  const proceedCheckout = async () => {
+  const proceedCheckout = async (totalPrice) => {
     // to load the script
+    console.log("proceedCheckout called", totalPrice, cart, parsedUser);
+
     try {
       await loadScript();
+      const { name } = parsedUser;
+      const productIds = cart.map((item) => item.id);
+      // create order - backend - razorpay
       const resp = await axios.post(
         urlConfig.BOOKING,
         {
-          user: "userid",
-          product: "67df9f7355aad7ce3d7eae85",
-          priceAtBooking: 500,
+          user: name,
+          product: productIds,
+          priceAtBooking: Number(totalPrice),
         },
         {
           withCredentials: true,
@@ -63,23 +71,8 @@ const Cart = () => {
       );
       console.log(resp, "resp");
 
-      // const resp = await
-      //   fetch("http://localhost:3000/api/booking/",
-      //     {
-      //       method: "POST",
-      //       headers: {
-      //         "Content-Type": "application/json",
-      //       },
-      //       body: JSON.stringify({
-      //         user: 'userid',
-      //         product: 'product',
-      //         priceAtBooking: 500
-      //       }), // amount in rupees
-      //     })
-      // console.log(resp);
       const respJson = resp.data;
       const { id, currency, amount } = respJson.message;
-      console.log(id, currency, amount);
 
       const options = {
         key: "rzp_test_31vDTPUmd3P4xY",
@@ -140,7 +133,6 @@ const Cart = () => {
                       borderRadius: 1,
                     }}
                   />
-                
 
                   <CardContent sx={{ flex: 1 }}>
                     <Typography variant="h6">{item.name}</Typography>
@@ -175,7 +167,7 @@ const Cart = () => {
             variant="contained"
             color="primary"
             sx={{ mt: 2 }}
-            onClick={() => proceedCheckout()}
+            onClick={() => proceedCheckout(totalPrice)}
           >
             Proceed to Checkout
           </Button>

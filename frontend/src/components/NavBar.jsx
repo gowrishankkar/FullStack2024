@@ -85,33 +85,6 @@ const NavBar = () => {
             sx={{ width: 80, height: 80 }}
           />
 
-          {/* <Paper
-            component="form"
-            sx={{
-              p: "2px 8px",
-              display: "flex",
-              alignItems: "center",
-              width: 250,
-              borderRadius: "999px",
-              backgroundColor: "#f7f7f7",
-              boxShadow: "none",
-            }}
-          >
-            <SearchIcon sx={{ color: "#888", mr: 1 }} />
-            <InputBase
-              placeholder="Search"
-              inputProps={{ "aria-label": "search" }}
-              sx={{
-                flex: 1,
-                fontSize: "0.9rem",
-              }}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setPageNum(1);
-              }}
-            />
-          </Paper> */}
-
           {/* Desktop Navigation */}
           <Grid
             item

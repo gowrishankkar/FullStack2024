@@ -69,7 +69,7 @@ const productSchema = new mongoose.Schema({
   },
 });
 
-const validCategories = ["Electronics", "clothes", "furniture", "stationery"];
+const validCategories = ["Electronics", "Jewelery", "Clothing", "Fitness", "Books", "Furniture"];
 
 productSchema.pre("save", function (next) {
   console.log("pre save hook");

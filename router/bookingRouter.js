@@ -17,7 +17,7 @@ bookingRouter.post("/", protectRoute, async (req, res) => {
     const userid = req.userId;
     // const product = req.params.productId;
     const { priceAtBooking, product } = req.body;
-    console.log('req', userid, req.params, req.body)
+    console.log("req", userid, req.params, req.body);
     const bookingObj = {
       user: userid,
       product: product,
@@ -25,16 +25,15 @@ bookingRouter.post("/", protectRoute, async (req, res) => {
     };
     const booking = await bookingModel.create(bookingObj);
     /** update user with booking details */
-    const user = await User.findById(userid)
+    const user = await User.findById(userid);
     user.bookings.push(booking._id);
     await user.save();
 
     let options = {
-      amount: priceAtBooking, // amount in the smallest currency unit
+      amount: parseInt(priceAtBooking * 100), // amount in the smallest currency unit
       currency: "INR",
       receipt: booking._id.toString(),
     };
-
     const order = await instance.orders.create(options);
     console.log("created order", order);
     /** updating booking with razor pay payment id */
@@ -45,11 +44,10 @@ bookingRouter.post("/", protectRoute, async (req, res) => {
       message: {
         id: order.id,
         currency: order.currency,
-        amount: order.amount
-      }
-    })
+        amount: order.amount,
+      },
+    });
   } catch (err) {
-
     console.log(err);
   }
 });

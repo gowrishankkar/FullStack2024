@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Container,
   Grid,
@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import URL from "../urlConfig";
 import { action } from "../redux/slices/cartSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Review from "../components/Review";
 
 const ProductDetails = () => {

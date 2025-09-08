@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ArrowCircleUpIcon from "@mui/icons-material/ArrowCircleUp";
 import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ProductList from "../components/ProductList";
 import Categories from "../components/Categories";
 import basicOps from "../utility/basicOps";

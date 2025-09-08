@@ -19,13 +19,13 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 function ProductList(props) {
-  const { productList, currCategory} = props;
+  const { productList, currCategory } = props;
   const cartProducts = useSelector((store) => {
     return store.cartReducer.cartProducts;
   });
   const dispatch = useDispatch();
   const handleAddProduct = (product) => {
-    dispatch(action.addToCart({product}));
+    dispatch(action.addToCart({ product }));
   };
 
   const handleDeleteProduct = (product) => {
@@ -51,7 +51,9 @@ function ProductList(props) {
               />
               <CardContent>
                 <Typography variant="h6" component="div" gutterBottom>
-                  <Link to={`/product/${product.id}`}>{product.title}</Link>
+                  <Link underline="none" to={`/product/${product.id}`}>
+                    {product.title}
+                  </Link>
                 </Typography>
                 <Typography variant="h5" color="text.primary" gutterBottom>
                   Rs {product.price}

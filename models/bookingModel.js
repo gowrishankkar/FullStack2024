@@ -20,11 +20,11 @@ const bookingSchema = new mongoose.Schema({
     required: true,
   },
   product: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: [String],
     ref: "Product",
     required: true,
   },
-  paymentOrderId: String
+  paymentOrderId: String,
 });
 
 const bookingModel = mongoose.model("Booking", bookingSchema);
