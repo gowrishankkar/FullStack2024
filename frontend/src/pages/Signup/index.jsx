@@ -1,46 +1,46 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import urlConfig from "../../urlConfig";
-import CircularProgress from '@mui/material/CircularProgress';
 import "./signup.css";
+import { Box, CircularProgress } from "@mui/material";
 
 function Signup() {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    // const [phone, setPhoneNumber] = useState("");
-    const [errMsg, setErrMsg] = useState("");
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSubmit = async () => {
-        try{
-            setLoading(true)
-            const userDetails = {name, email, password, confirmPassword}
-            const res = await axios.post(urlConfig.SIGNUP_URL, userDetails)
-            setLoading(false)
-            setName("")
-            setEmail("")
-            setPassword("")
-            setConfirmPassword("")
-            navigate("/login")
-
-        }catch(err){
-            setErrMsg(err.message)
-            console.log(err)
-            setLoading(false)
-            setTimeout(()=>{
-                setErrMsg("")
-            },2000)
-        }
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      const userDetails = { name, email, password, confirmPassword };
+      const res = await axios.post(urlConfig.SIGNUP_URL, userDetails);
+      setLoading(false);
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+      navigate("/login");
+    } catch (err) {
+      setErrMsg(err.message);
+      console.log(err);
+      setLoading(false);
+      setTimeout(() => {
+        setErrMsg("");
+      }, 2000);
     }
-    if(loading){
-        return ( <Box sx={{ display: 'flex' }}>
-      <CircularProgress />
-    </Box>)
-    }
+  };
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <div className="signupscreen">
