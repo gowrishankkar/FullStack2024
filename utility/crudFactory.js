@@ -1,5 +1,5 @@
 const getAllFactory = (elementModel) => async (req, res) => {
-    console.log("get all factory for",elementModel)
+  console.log("get all factory for", elementModel);
   try {
     const data = await elementModel.find();
     if (data.length === 0) {
@@ -20,10 +20,10 @@ const getAllFactory = (elementModel) => async (req, res) => {
 
 const createFactory = (elementModel) => async (req, res) => {
   try {
-    console.log("creating products")
+    console.log("creating products");
     const elementDetails = req.body;
     const data = await elementModel.create(elementDetails);
-    console.log("executed creation")
+    console.log("executed creation");
     res.status(200).json({
       message: "Data created",
       data: data,
@@ -40,23 +40,21 @@ const getElementByIdFactory = (elementModel) => async (req, res, next) => {
   try {
     const { id } = req.params;
     const data = await elementModel.findById(id);
-    console.log("data", data  )
+    console.log("data", data);
     if (data == undefined) {
-      throw {message:"no data found",statusCode:501};
+      throw { message: "no data found", statusCode: 501 };
     } else {
       res.status(200).json({
         message: "Data found",
-        data: data,
+        data: data
       });
     }
-  } 
-  
-  catch (err) {
+  } catch (err) {
     // res.status(500).json({
     //   status: 500,
     //   message: err.message,
     // });
-    next(err)
+    next(err);
   }
 };
 
@@ -95,22 +93,42 @@ const deleteElementByIdFactory = (elementModel) => async (req, res) => {
 };
 
 const updateElementByIdFactory = (elementModel) => async (req, res) => {
-    try{
+  try {
+      const { id } = req.params;
+    const updateData = req.body;
 
-    }catch(err){
-        res.status(500).json({
-            status: 500,
-            message: err.message,
-          });
+    // Find the element by ID and update it
+    const updatedElement = await elementModel.findByIdAndUpdate(id, updateData, {
+      new: true,             // return the updated document
+      runValidators: true,   // validate before saving
+    });
 
+    // If not found
+    if (!updatedElement) {
+      return res.status(404).json({
+        status: 404,
+        message: `${elementModel.modelName} with ID ${id} not found`,
+      });
     }
-}
+
+    // Success
+    res.status(200).json({
+      status: 200,
+      data: updatedElement,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message,
+    });
+  }
+};
 
 module.exports = {
-    getAllFactory,
-    createFactory,
-    getElementByIdFactory,
-    deleteElementByIdFactory,
-    checkInput,
-    updateElementByIdFactory
-}
+  getAllFactory,
+  createFactory,
+  getElementByIdFactory,
+  deleteElementByIdFactory,
+  checkInput,
+  updateElementByIdFactory,
+};

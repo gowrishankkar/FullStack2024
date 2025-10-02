@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Card,
@@ -10,13 +10,30 @@ import {
   Grid,
   IconButton,
 } from "@mui/material";
+import URL from "../urlConfig";
+import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useAuth } from "../contexts/AuthProvider";
 
 const UserProfile = () => {
-  const { authenticatedUser } = useAuth();
-  const [user, setUser] = useState(authenticatedUser);
+  const savedUser = sessionStorage.getItem("user");
+  const parsedUser = JSON.parse(savedUser);
+
+  const [user, setUser] = useState(parsedUser);
+  const [userID, setUserID] = useState("");
+
+  const onload = async () => {
+    setUserID(parsedUser._id);
+    if (userID || parsedUser._id) {
+      const user = await axios.get(`${URL.USER}/${userID || parsedUser._id}`);
+      console.log("user", user.data.data);
+      setUser(user.data.data);
+    }
+  };
+  useEffect(() => {
+    onload();
+  }, []);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -24,9 +41,15 @@ const UserProfile = () => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsEditing(false);
-    alert("Profile updated!");
+    try {
+      await axios.patch(`${URL.USER}/${userID || parsedUser._id}`, user);
+      alert("Profile updated!");
+    } catch (err) {
+      alert(err);
+      console.log("err", err);
+    }
   };
 
   const handleAvatarChange = (e) => {
@@ -42,27 +65,9 @@ const UserProfile = () => {
       <Card sx={{ maxWidth: 500, mx: "auto", p: 3, textAlign: "center" }}>
         <Grid container spacing={2} alignItems="center" justifyContent="center">
           <Grid item>
-            <label htmlFor="avatar-upload">
-              <input
-                type="file"
-                id="avatar-upload"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleAvatarChange}
-              />
-              <IconButton component="span">
-                <Avatar src={user.avatar} sx={{ width: 100, height: 100 }} />
-                <CameraAltIcon
-                  sx={{
-                    position: "absolute",
-                    color: "white",
-                    background: "black",
-                    borderRadius: "50%",
-                    padding: 0.5,
-                  }}
-                />
-              </IconButton>
-            </label>
+            <IconButton component="span">
+              <Avatar src={user?.avatar} sx={{ width: 100, height: 100 }} />
+            </IconButton>
           </Grid>
         </Grid>
 

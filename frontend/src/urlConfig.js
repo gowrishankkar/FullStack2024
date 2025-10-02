@@ -9,6 +9,7 @@ const urlConfig = {
   GET_PRODUCTS: `${BASE_URL}/api/product`,
   GET_CATEGORIES: `${BASE_URL}/api/product/categories`,
   BOOKING: `${BASE_URL}/api/booking`,
+  USER: `${BASE_URL}/api/user`,
 };
 
 export default urlConfig;

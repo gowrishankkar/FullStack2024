@@ -11,7 +11,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const DB = process.env.DATABASE;
-const Port = process.env.PORT;
+const Port = process.env.PORT || 3000;
 
 console.log("DB", DB, Port);
 mongoose
@@ -99,5 +99,5 @@ app.use(function (req, res) {
 
 // server
 app.listen(Port, function () {
-  console.log("sever is listening to port 3000");
+  console.log(`sever is listening to port 3000 , http://localhost:${Port} `);
 });

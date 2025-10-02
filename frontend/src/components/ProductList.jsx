@@ -1,14 +1,9 @@
-import React from "react";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import { Link } from "react-router-dom";
 import {
   Card,
   CardMedia,
   CardContent,
   Typography,
-  Button,
-  CardActions,
   IconButton,
   Box,
 } from "@mui/material";
@@ -19,7 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 function ProductList(props) {
-  const { productList, currCategory } = props;
+  const { productList } = props;
   const cartProducts = useSelector((store) => {
     return store.cartReducer.cartProducts;
   });
@@ -51,7 +46,11 @@ function ProductList(props) {
               />
               <CardContent>
                 <Typography variant="h6" component="div" gutterBottom>
-                  <Link underline="none" to={`/product/${product.id}`}>
+                  <Link
+                    underline="none"
+                    to={`/product/${product.id}`}
+                    style={{ textDecoration: "none" }}
+                  >
                     {product.title}
                   </Link>
                 </Typography>

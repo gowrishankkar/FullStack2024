@@ -26,9 +26,10 @@ function App() {
       <PaginationProvider>
         {showNavbar && <NavBar></NavBar>}
         <Routes>
-          <Route path="/" element={<Home></Home>}>
-            {" "}
+          <Route element={<RequireAuth></RequireAuth>}>
+            <Route path="/" element={<Home></Home>}></Route>
           </Route>
+
           <Route path="/signup" element={<Signup></Signup>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route element={<RequireAuth></RequireAuth>}>

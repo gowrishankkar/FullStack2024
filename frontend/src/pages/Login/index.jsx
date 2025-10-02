@@ -24,12 +24,13 @@ function Login() {
         withCredentials: true,
       });
       console.log("logged in user", res);
-      loginAuthenticatedUser(res.data.user);
+      const user = res.data.user;
+      loginAuthenticatedUser({...user, _id: res.data.data._id});
       setLoading(false);
       setEmail("");
       setPassword("");
       navigate("/");
-      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("user", JSON.stringify({...user, _id: res.data.data._id}));
     } catch (err) {
       setErrMsg(err.message);
       console.log(err);
