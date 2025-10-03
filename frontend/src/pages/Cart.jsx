@@ -35,6 +35,10 @@ const Cart = () => {
     dispatch(action.removeFromCart(product));
   };
 
+   const clearCart = (product) => {
+    dispatch(action.clearCart());
+  };
+
   function loadScript() {
     return new Promise(function (resolve, reject) {
       const script = document.createElement("script");
@@ -83,9 +87,8 @@ const Cart = () => {
         name: "Payment",
         description: "Thanks for the payment",
         handler: function (response) {
-          alert("payment id" + response.razorpay_payment_id);
-          alert("order id " + response.razorpay_order_id);
-          alert(response.razorpay_signature);
+          alert("Payment done successfully");
+          clearCart();
         },
         prefill: {
           name: "Jasbir",

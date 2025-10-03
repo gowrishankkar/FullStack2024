@@ -23,7 +23,10 @@ const cartSlice = createSlice({
       });
       if (requiredProduct == undefined) {
         // not present
-        state.cartProducts.push({ ...productToBeAdded, indQuantity: quantity ? quantity : 1 });
+        state.cartProducts.push({
+          ...productToBeAdded,
+          indQuantity: quantity ? quantity : 1,
+        });
       } else {
         // already present
         quantity
@@ -58,6 +61,10 @@ const cartSlice = createSlice({
           state.cartQuantity--;
         }
       }
+    },
+    clearCart: (state, action) => {
+      state.cartProducts = [];
+      state.cartQuantity = 0;
     },
   },
 });
