@@ -577,7 +577,7 @@ function Home() {
             </Grid>
           )}
         </Grid>
-        <Grid item xs={9} md="auto">
+        <Grid item xs={9} md="auto" sx={{ display: { xs: 'none', md: 'block' } }}>
           {loadingCategories ? (
             <Box display="flex" justifyContent="center" alignItems="center" height={50}>
               <CircularProgress size={30} />

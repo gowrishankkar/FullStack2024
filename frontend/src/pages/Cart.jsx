@@ -134,9 +134,9 @@ const Cart = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 } }}>
       {/* Header */}
-      <Box sx={{ mb: 4, textAlign: 'center' }}>
+      <Box sx={{ mb: { xs: 2, sm: 3, md: 4 }, textAlign: 'center' }}>
         <Typography
           variant="h3"
           component="h1"
@@ -146,7 +146,8 @@ const Cart = () => {
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            mb: 1
+            mb: 1,
+            fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' }
           }}
         >
           Shopping Cart
@@ -188,19 +189,19 @@ const Cart = () => {
           </Button>
         </Paper>
       ) : (
-        <Grid container spacing={4}>
+        <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
           {/* Cart Items */}
           <Grid item xs={12} md={8}>
-            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, boxShadow: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 1 }}>
+                <Typography variant="h5" sx={{ fontWeight: 600, fontSize: { xs: '1.1rem', sm: '1.3rem' } }}>
                   Cart Items
                 </Typography>
                 <Button
                   variant="outlined"
                   color="error"
                   onClick={clearCart}
-                  sx={{ borderRadius: 2 }}
+                  sx={{ borderRadius: 2, fontSize: { xs: '0.85rem', sm: '1rem' } }}
                 >
                   Clear Cart
                 </Button>
@@ -326,25 +327,25 @@ const Cart = () => {
 
           {/* Order Summary */}
           <Grid item xs={12} md={4}>
-            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 2, position: 'sticky', top: 20 }}>
-              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, boxShadow: 2, position: { md: 'sticky' }, top: { md: 20 } }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3, fontSize: { xs: '1.1rem', sm: '1.3rem' } }}>
                 Order Summary
               </Typography>
 
               <Box sx={{ mb: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                   <Typography variant="body1">Subtotal ({cart.length} items)</Typography>
                   <Typography variant="body1">Rs {subtotal.toLocaleString()}</Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                   <Typography variant="body1">Shipping</Typography>
                   <Typography variant="body1" sx={{ color: shipping === 0 ? '#4caf50' : 'inherit' }}>
                     {shipping === 0 ? 'FREE' : `Rs ${shipping}`}
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
                   <Typography variant="body1">Tax (GST 18%)</Typography>
                   <Typography variant="body1">Rs {tax.toFixed(2)}</Typography>
                 </Box>
@@ -352,8 +353,8 @@ const Cart = () => {
                 <Divider sx={{ my: 2 }} />
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                  <Typography variant="h6" sx={{ fontWeight: 600 }}>Total</Typography>
-                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#6C4EFF' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>Total</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#6C4EFF', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                     Rs {totalPrice.toLocaleString()}
                   </Typography>
                 </Box>
@@ -372,8 +373,8 @@ const Cart = () => {
                     boxShadow: '0 8px 25px rgba(108, 78, 255, 0.3)'
                   },
                   borderRadius: 2,
-                  py: 1.5,
-                  fontSize: '1.1rem',
+                  py: { xs: 1, sm: 1.5 },
+                  fontSize: { xs: '0.95rem', sm: '1rem' },
                   fontWeight: 600,
                   transition: 'all 0.3s ease',
                   mb: 2

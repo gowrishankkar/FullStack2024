@@ -269,25 +269,25 @@ const Bookings = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: { xs: 2, sm: 3, md: 4 }, mb: { xs: 2, sm: 3, md: 4 } }}>
       {/* Header */}
       <Paper
         sx={{
           background: 'linear-gradient(135deg, #6C4EFF 0%, #FF6B6B 100%)',
           color: 'white',
-          p: 4,
-          mb: 4,
+          p: { xs: 2, sm: 3, md: 4 },
+          mb: { xs: 2, sm: 3, md: 4 },
           borderRadius: 3,
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        <ShoppingBag sx={{ fontSize: 60, mb: 2, opacity: 0.9 }} />
-        <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 1 }}>
+        <ShoppingBag sx={{ fontSize: { xs: 40, sm: 50, md: 60 }, mb: 2, opacity: 0.9 }} />
+        <Typography variant="h3" component="h1" sx={{ fontWeight: 700, mb: 1, fontSize: { xs: '1.75rem', sm: '2.2rem', md: '2.5rem' } }}>
           My Bookings
         </Typography>
-        <Typography variant="body1" sx={{ opacity: 0.9 }}>
+        <Typography variant="body1" sx={{ opacity: 0.9, fontSize: { xs: '0.9rem', sm: '1rem' } }}>
           Track your orders and purchase history
         </Typography>
       </Paper>
