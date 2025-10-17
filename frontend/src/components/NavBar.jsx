@@ -11,6 +11,7 @@ import {
   MenuItem,
   Box,
   Grid,
+  Tooltip,
 } from "@mui/material";
 import axios from "axios";
 import URL from "../urlConfig";
@@ -19,6 +20,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import HomeIcon from "@mui/icons-material/Home";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useSelector } from "react-redux";
 import { useAuth } from "../contexts/AuthProvider";
 import logo from "../assets/logo.png";
@@ -58,14 +60,26 @@ const NavBar = () => {
   };
 
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar 
+      position="static"
+      sx={{
+        background: 'linear-gradient(90deg, #ffffff 0%, #f5f5f7 100%)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+        borderBottom: '1px solid #e5e5e7',
+      }}
+    >
+      <Toolbar sx={{ py: 1 }}>
         {/* Mobile Menu Icon */}
         <IconButton
           edge="start"
-          color="inherit"
+          sx={{ 
+            display: { xs: "block", md: "none" },
+            color: '#ff1e00',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 30, 0, 0.1)',
+            },
+          }}
           aria-label="menu"
-          sx={{ display: { xs: "block", md: "none" } }}
           onClick={handleMobileMenuClick}
         >
           <MenuIcon />
@@ -87,6 +101,10 @@ const NavBar = () => {
               display: 'flex',
               alignItems: 'center',
               gap: 1,
+              transition: 'transform 0.2s ease',
+              '&:hover': {
+                transform: 'scale(1.05)',
+              },
             }}
           >
             <Logo size="small" />
@@ -98,53 +116,95 @@ const NavBar = () => {
             sx={{
               display: { xs: "none", md: "flex" },
               alignItems: "center",
-              gap: 2,
+              gap: 1,
             }}
           >
             {/* Home */}
-            <IconButton
-              color="inherit"
-              onClick={() => {
-                navigate("/");
-              }}
-              sx={{
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  transform: 'scale(1.1)',
-                },
-                transition: 'all 0.2s ease',
-              }}
-              title="Home"
-            >
-              <HomeIcon />
-            </IconButton>
+            <Tooltip title="Home">
+              <IconButton
+                onClick={() => {
+                  navigate("/");
+                }}
+                sx={{
+                  color: '#1d1d1f',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 30, 0, 0.1)',
+                    color: '#ff1e00',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <HomeIcon />
+              </IconButton>
+            </Tooltip>
 
-            <IconButton color="inherit">
-              <Badge
-                badgeContent={quantity}
-                color="error"
+            {/* Shopping Cart */}
+            <Tooltip title="Shopping Cart">
+              <IconButton 
                 onClick={() => {
                   navigate("/cart");
                 }}
+                sx={{
+                  color: '#1d1d1f',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 30, 0, 0.1)',
+                    color: '#ff1e00',
+                  },
+                  transition: 'all 0.2s ease',
+                  position: 'relative',
+                }}
               >
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButton>
+                <Badge
+                  badgeContent={quantity}
+                  sx={{
+                    '& .MuiBadge-badge': {
+                      backgroundColor: '#ff1e00',
+                      color: '#ffffff',
+                      fontWeight: 'bold',
+                      fontSize: '0.75rem',
+                    },
+                  }}
+                >
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
 
-            {/* Bookings */}
-            <IconButton
-              color="inherit"
-              onClick={() => {
-                navigate("/bookings");
-              }}
-            >
-              <ReceiptIcon />
-            </IconButton>
+            {/* Bookings/Orders */}
+            <Tooltip title="Orders">
+              <IconButton
+                onClick={() => {
+                  navigate("/bookings");
+                }}
+                sx={{
+                  color: '#1d1d1f',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 30, 0, 0.1)',
+                    color: '#ff1e00',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ReceiptIcon />
+              </IconButton>
+            </Tooltip>
 
             {/* User Profile */}
-            <IconButton color="inherit" onClick={handleProfileClick}>
-              <AccountCircleIcon />
-            </IconButton>
+            <Tooltip title="Profile">
+              <IconButton 
+                onClick={handleProfileClick}
+                sx={{
+                  color: '#1d1d1f',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 30, 0, 0.1)',
+                    color: '#ff1e00',
+                  },
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <AccountCircleIcon />
+              </IconButton>
+            </Tooltip>
           </Grid>
         </Grid>
 
@@ -153,9 +213,50 @@ const NavBar = () => {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleCloseProfileMenu}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          PaperProps={{
+            sx: {
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+              borderRadius: '12px',
+              minWidth: '200px',
+              mt: 1,
+            },
+          }}
         >
-          <MenuItem onClick={() => navigate("/user")}>Profile</MenuItem>
-          <MenuItem onClick={() => logout()}>Logout</MenuItem>
+          <MenuItem 
+            onClick={() => {
+              navigate("/user");
+              handleCloseProfileMenu();
+            }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <AccountCircleIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
+            Profile
+          </MenuItem>
+          <MenuItem 
+            onClick={() => logout()}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <LogoutIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
+            Logout
+          </MenuItem>
         </Menu>
 
         {/* Mobile Menu */}
@@ -163,18 +264,95 @@ const NavBar = () => {
           anchorEl={mobileMenu}
           open={Boolean(mobileMenu)}
           onClose={handleCloseMobileMenu}
+          PaperProps={{
+            sx: {
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+              borderRadius: '12px',
+            },
+          }}
         >
           <MenuItem
             onClick={() => {
               navigate("/");
               handleCloseMobileMenu();
             }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
           >
-            <HomeIcon sx={{ mr: 1 }} />
+            <HomeIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
             Home
           </MenuItem>
-          <MenuItem onClick={handleCloseMobileMenu}>Products</MenuItem>
-          <MenuItem onClick={handleCloseMobileMenu}>Contact</MenuItem>
+          <MenuItem 
+            onClick={() => {
+              navigate("/cart");
+              handleCloseMobileMenu();
+            }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <Badge badgeContent={quantity} sx={{
+              '& .MuiBadge-badge': {
+                backgroundColor: '#ff1e00',
+                color: '#ffffff',
+              },
+            }}>
+              <ShoppingCartIcon sx={{ color: '#ff1e00' }} />
+            </Badge>
+            <Typography sx={{ ml: 1.5 }}>Cart</Typography>
+          </MenuItem>
+          <MenuItem 
+            onClick={() => {
+              navigate("/bookings");
+              handleCloseMobileMenu();
+            }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <ReceiptIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
+            Orders
+          </MenuItem>
+          <MenuItem 
+            onClick={() => {
+              navigate("/user");
+              handleCloseMobileMenu();
+            }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <AccountCircleIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
+            Profile
+          </MenuItem>
+          <MenuItem 
+            onClick={() => {
+              logout();
+              handleCloseMobileMenu();
+            }}
+            sx={{
+              color: '#1d1d1f',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 30, 0, 0.08)',
+              },
+            }}
+          >
+            <LogoutIcon sx={{ mr: 1.5, color: '#ff1e00' }} />
+            Logout
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

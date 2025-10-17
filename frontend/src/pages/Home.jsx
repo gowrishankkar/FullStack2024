@@ -512,36 +512,52 @@ function Home() {
             </ClickAwayListener>
           </Grid>
           <Grid item>
-            <ArrowCircleUpIcon
-              sx={{
-                color: "blue",
-                fontSize: "large",
-                cursor: "pointer",
-                transition: "transform 0.2s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.1)",
-                },
-              }}
-              onClick={() => {
-                setsortDir(1);
-                setPageNum(1);
-              }}
-            />
-            <ArrowCircleDownIcon
-              sx={{
-                color: "blue",
-                fontSize: "large",
-                cursor: "pointer",
-                transition: "transform 0.2s ease-in-out",
-                "&:hover": {
-                  transform: "scale(1.1)",
-                },
-              }}
-              onClick={() => {
-                setsortDir(-1);
-                setPageNum(1);
-              }}
-            />
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+              <ArrowCircleUpIcon
+                sx={{
+                  color: "#1976d2",
+                  fontSize: 40,
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                  "&:hover": {
+                    color: "#1565c0",
+                    transform: "scale(1.15) translateY(-2px)",
+                    filter: 'drop-shadow(0 6px 12px rgba(25, 118, 210, 0.3))',
+                  },
+                  "&:active": {
+                    transform: "scale(0.95)",
+                  },
+                }}
+                onClick={() => {
+                  setsortDir(1);
+                  setPageNum(1);
+                }}
+                title="Sort by Price: Low to High"
+              />
+              <ArrowCircleDownIcon
+                sx={{
+                  color: "#dc004e",
+                  fontSize: 40,
+                  cursor: "pointer",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))',
+                  "&:hover": {
+                    color: "#c2185b",
+                    transform: "scale(1.15) translateY(2px)",
+                    filter: 'drop-shadow(0 6px 12px rgba(220, 0, 78, 0.3))',
+                  },
+                  "&:active": {
+                    transform: "scale(0.95)",
+                  },
+                }}
+                onClick={() => {
+                  setsortDir(-1);
+                  setPageNum(1);
+                }}
+                title="Sort by Price: High to Low"
+              />
+            </Box>
           </Grid>
           {/* Filter toggle button for mobile */}
           {isMobile && (

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 import NavBar from "./components/NavBar";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import PageNotFound from "./pages/PageNotFound";
@@ -13,8 +12,20 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import AuthProvider from "./contexts/AuthProvider";
 import RequireAuth from "./components/RequireAuth";
-import { ThemeProvider } from "@mui/material/styles";
-import theme from "./theme";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+// Create a default Material-UI theme without Apple colors
+const defaultTheme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
 function App() {
   const location = useLocation();
@@ -25,7 +36,8 @@ function App() {
     );
   }, [location]);
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={defaultTheme}>
+      <CssBaseline />
       <AuthProvider>
         <PaginationProvider>
           {showNavbar && <NavBar></NavBar>}

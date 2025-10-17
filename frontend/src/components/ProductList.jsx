@@ -36,10 +36,17 @@ function ProductList(props) {
   };
 
   return (
-    <Box sx={{ width: '100%', px: { xs: 1, sm: 2, md: 3 } }}>
+    <Box sx={{ width: "100%", px: { xs: 1, sm: 2, md: 3 } }}>
       {productList == null ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height={200}>
-          <Typography variant="h6" color="text.secondary">Loading...</Typography>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height={200}
+        >
+          <Typography variant="h6" color="text.secondary">
+            Loading...
+          </Typography>
         </Box>
       ) : (
         <Grid
@@ -47,15 +54,17 @@ function ProductList(props) {
           spacing={{ xs: 2, sm: 3, md: 3 }}
           sx={{
             justifyContent: {
-              xs: 'center',
-              sm: 'flex-start',
-              md: 'flex-start'
-            }
+              xs: "center",
+              sm: "flex-start",
+              md: "flex-start",
+            },
           }}
         >
           {productList.map((product) => {
-            const inCart = cartProducts.some(item => item.id === product.id);
-            const cartItem = cartProducts.find(item => item.id === product.id);
+            const inCart = cartProducts.some((item) => item.id === product.id);
+            const cartItem = cartProducts.find(
+              (item) => item.id === product.id
+            );
             const quantity = cartItem ? cartItem.indQuantity : 0;
 
             return (
@@ -67,65 +76,73 @@ function ProductList(props) {
                 lg={3}
                 key={product.id}
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
+                  display: "flex",
+                  justifyContent: "center",
                 }}
               >
                 <Card
                   sx={{
-                    width: '100%',
+                    width: "100%",
                     maxWidth: 320,
                     minHeight: 420,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+                    display: "flex",
+                    flexDirection: "column",
+                    boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
                     borderRadius: 3,
-                    position: 'relative',
-                    overflow: 'hidden',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    border: '1px solid rgba(0,0,0,0.04)',
-                    '&:hover': {
-                      transform: 'translateY(-4px)',
-                      boxShadow: '0 8px 25px rgba(0,0,0,0.12)',
-                      borderColor: 'rgba(108, 78, 255, 0.2)',
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    border: "1px solid rgba(0,0,0,0.04)",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
+                      borderColor: "rgba(108, 78, 255, 0.2)",
                     },
-                    cursor: 'pointer',
+                    cursor: "pointer",
                   }}
                 >
                   {/* Favorite Button */}
                   <IconButton
                     sx={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 12,
                       right: 12,
-                      backgroundColor: 'rgba(255,255,255,0.95)',
-                      backdropFilter: 'blur(10px)',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      backgroundColor: "rgba(255,255,255,0.95)",
+                      backdropFilter: "blur(10px)",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                       zIndex: 2,
-                      '&:hover': {
-                        backgroundColor: 'rgba(255,255,255,1)',
-                        transform: 'scale(1.1)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                      "&:hover": {
+                        backgroundColor: "rgba(255,255,255,1)",
+                        transform: "scale(1.1)",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                       },
-                      transition: 'all 0.2s ease',
+                      transition: "all 0.2s ease",
                     }}
                     size="small"
                   >
-                    <FavoriteBorderIcon sx={{ color: '#ff6b6b', fontSize: 20 }} />
+                    <FavoriteBorderIcon
+                      sx={{ color: "#ff6b6b", fontSize: 20 }}
+                    />
                   </IconButton>
 
                   {/* Product Image */}
-                  <Box sx={{ position: 'relative', overflow: 'hidden', height: 240 }}>
+                  <Box
+                    sx={{
+                      position: "relative",
+                      overflow: "hidden",
+                      height: 240,
+                    }}
+                  >
                     <CardMedia
                       component="img"
                       height="100%"
                       image={product.images[0]}
                       alt={product.name}
                       sx={{
-                        transition: 'transform 0.4s ease',
-                        objectFit: 'cover',
-                        '&:hover': {
-                          transform: 'scale(1.08)',
+                        transition: "transform 0.4s ease",
+                        objectFit: "cover",
+                        "&:hover": {
+                          transform: "scale(1.08)",
                         },
                       }}
                     />
@@ -134,14 +151,14 @@ function ProductList(props) {
                       label="New"
                       size="small"
                       sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         top: 12,
                         left: 12,
-                        backgroundColor: '#6C4EFF',
-                        color: 'white',
-                        fontWeight: 'bold',
-                        fontSize: '0.7rem',
-                        height: '24px',
+                        backgroundColor: "#6C4EFF",
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "0.7rem",
+                        height: "24px",
                         zIndex: 2,
                       }}
                     />
@@ -151,8 +168,8 @@ function ProductList(props) {
                     sx={{
                       p: 2.5,
                       flex: 1,
-                      display: 'flex',
-                      flexDirection: 'column',
+                      display: "flex",
+                      flexDirection: "column",
                       gap: 1.5,
                     }}
                   >
@@ -162,22 +179,22 @@ function ProductList(props) {
                       component="div"
                       sx={{
                         fontWeight: 600,
-                        fontSize: '1rem',
+                        fontSize: "1rem",
                         lineHeight: 1.3,
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        display: "-webkit-box",
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        minHeight: '2.6rem',
-                        color: '#1a1a1a',
+                        WebkitBoxOrient: "vertical",
+                        minHeight: "2.6rem",
+                        color: "#1a1a1a",
                       }}
                     >
                       <Link
                         to={`/product/${product.id}`}
                         style={{
-                          textDecoration: 'none',
-                          color: 'inherit',
+                          textDecoration: "none",
+                          color: "inherit",
                         }}
                       >
                         {product.title}
@@ -185,45 +202,49 @@ function ProductList(props) {
                     </Typography>
 
                     {/* Rating */}
-                    <Box sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 0.5
-                    }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                      }}
+                    >
                       <Rating
-                        value={4.2}
+                        value={product.averageRating}
                         precision={0.5}
                         size="small"
                         readOnly
                         sx={{
-                          color: '#ffb400',
-                          '& .MuiRating-icon': {
-                            fontSize: '1rem',
+                          color: "#ffb400",
+                          "& .MuiRating-icon": {
+                            fontSize: "1rem",
                           },
                         }}
                       />
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ fontSize: '0.8rem' }}
+                        sx={{ fontSize: "0.8rem" }}
                       >
-                        (4.2)
+                        {product.averageRating}
                       </Typography>
                     </Box>
 
                     {/* Price Section */}
-                    <Box sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      flexWrap: 'wrap'
-                    }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        flexWrap: "wrap",
+                      }}
+                    >
                       <Typography
                         variant="h6"
                         sx={{
                           fontWeight: 700,
-                          color: '#6C4EFF',
-                          fontSize: '1.1rem',
+                          color: "#6C4EFF",
+                          fontSize: "1.1rem",
                         }}
                       >
                         Rs {product.price}
@@ -231,9 +252,9 @@ function ProductList(props) {
                       <Typography
                         variant="body2"
                         sx={{
-                          textDecoration: 'line-through',
-                          color: 'text.secondary',
-                          fontSize: '0.85rem',
+                          textDecoration: "line-through",
+                          color: "text.secondary",
+                          fontSize: "0.85rem",
                         }}
                       >
                         Rs {Math.round(product.price * 1.2)}
@@ -242,11 +263,11 @@ function ProductList(props) {
                         label="20% OFF"
                         size="small"
                         sx={{
-                          backgroundColor: '#ff6b6b',
-                          color: 'white',
-                          fontSize: '0.65rem',
+                          backgroundColor: "#ff6b6b",
+                          color: "white",
+                          fontSize: "0.65rem",
                           fontWeight: 600,
-                          height: '20px',
+                          height: "20px",
                           px: 0.5,
                         }}
                       />
@@ -256,13 +277,15 @@ function ProductList(props) {
                     <Box sx={{ flex: 1 }} />
 
                     {/* Add to Cart Section */}
-                    <Box sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      mt: 'auto',
-                      pt: 1
-                    }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                        mt: "auto",
+                        pt: 1,
+                      }}
+                    >
                       {quantity > 0 ? (
                         <Box
                           display="flex"
@@ -270,25 +293,25 @@ function ProductList(props) {
                           justifyContent="center"
                           gap={0.5}
                           sx={{
-                            backgroundColor: '#f8f9fa',
+                            backgroundColor: "#f8f9fa",
                             borderRadius: 2,
                             px: 1.5,
                             py: 0.75,
-                            border: '1px solid #e9ecef',
-                            minWidth: '100px',
+                            border: "1px solid #e9ecef",
+                            minWidth: "100px",
                           }}
                         >
                           <IconButton
                             onClick={() => handleDeleteProduct(product)}
                             size="small"
                             sx={{
-                              color: '#6C4EFF',
+                              color: "#6C4EFF",
                               p: 0.5,
-                              '&:hover': {
-                                backgroundColor: 'rgba(108, 78, 255, 0.1)',
-                                transform: 'scale(1.1)',
+                              "&:hover": {
+                                backgroundColor: "rgba(108, 78, 255, 0.1)",
+                                transform: "scale(1.1)",
                               },
-                              transition: 'all 0.2s ease',
+                              transition: "all 0.2s ease",
                             }}
                           >
                             <RemoveIcon fontSize="small" />
@@ -296,10 +319,10 @@ function ProductList(props) {
                           <Typography
                             sx={{
                               fontWeight: 600,
-                              minWidth: '24px',
-                              textAlign: 'center',
-                              fontSize: '0.9rem',
-                              color: '#1a1a1a',
+                              minWidth: "24px",
+                              textAlign: "center",
+                              fontSize: "0.9rem",
+                              color: "#1a1a1a",
                             }}
                           >
                             {quantity}
@@ -308,13 +331,13 @@ function ProductList(props) {
                             onClick={() => handleAddProduct(product)}
                             size="small"
                             sx={{
-                              color: '#6C4EFF',
+                              color: "#6C4EFF",
                               p: 0.5,
-                              '&:hover': {
-                                backgroundColor: 'rgba(108, 78, 255, 0.1)',
-                                transform: 'scale(1.1)',
+                              "&:hover": {
+                                backgroundColor: "rgba(108, 78, 255, 0.1)",
+                                transform: "scale(1.1)",
                               },
-                              transition: 'all 0.2s ease',
+                              transition: "all 0.2s ease",
                             }}
                           >
                             <AddIcon fontSize="small" />
@@ -326,21 +349,21 @@ function ProductList(props) {
                           startIcon={<ShoppingCartIcon />}
                           onClick={() => handleAddProduct(product)}
                           sx={{
-                            backgroundColor: '#6C4EFF',
-                            '&:hover': {
-                              backgroundColor: '#5a3ed1',
-                              transform: 'translateY(-1px)',
-                              boxShadow: '0 4px 12px rgba(108, 78, 255, 0.3)',
+                            backgroundColor: "#6C4EFF",
+                            "&:hover": {
+                              backgroundColor: "#5a3ed1",
+                              transform: "translateY(-1px)",
+                              boxShadow: "0 4px 12px rgba(108, 78, 255, 0.3)",
                             },
                             borderRadius: 2,
-                            textTransform: 'none',
+                            textTransform: "none",
                             fontWeight: 600,
-                            fontSize: '0.85rem',
+                            fontSize: "0.85rem",
                             py: 1,
                             px: 2,
                             flex: 1,
-                            transition: 'all 0.2s ease',
-                            boxShadow: '0 2px 8px rgba(108, 78, 255, 0.2)',
+                            transition: "all 0.2s ease",
+                            boxShadow: "0 2px 8px rgba(108, 78, 255, 0.2)",
                           }}
                         >
                           Add to Cart
@@ -352,17 +375,17 @@ function ProductList(props) {
                           component={Link}
                           to={`/product/${product.id}`}
                           sx={{
-                            color: '#666',
-                            border: '1px solid #e9ecef',
+                            color: "#666",
+                            border: "1px solid #e9ecef",
                             borderRadius: 2,
                             p: 1,
-                            '&:hover': {
-                              color: '#6C4EFF',
-                              backgroundColor: 'rgba(108, 78, 255, 0.1)',
-                              borderColor: '#6C4EFF',
-                              transform: 'scale(1.05)',
+                            "&:hover": {
+                              color: "#6C4EFF",
+                              backgroundColor: "rgba(108, 78, 255, 0.1)",
+                              borderColor: "#6C4EFF",
+                              transform: "scale(1.05)",
                             },
-                            transition: 'all 0.2s ease',
+                            transition: "all 0.2s ease",
                           }}
                         >
                           <StarIcon sx={{ fontSize: 18 }} />

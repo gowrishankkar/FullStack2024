@@ -22,8 +22,13 @@ const Logo = ({ size = "medium", variant = "full" }) => {
           width: icon + 8,
           height: icon + 8,
           borderRadius: "50%",
-          background: "linear-gradient(135deg, #FF6B5B 0%, #FF8566 100%)",
+          background: "#000000",
           cursor: "pointer",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+          '&:hover': {
+            background: "#1d1d1f",
+            transform: 'scale(1.05)',
+          },
         }}
       >
         <ShoppingBag sx={{ fontSize: icon, color: "white" }} />
@@ -39,6 +44,10 @@ const Logo = ({ size = "medium", variant = "full" }) => {
         alignItems: "center",
         gap: 1,
         cursor: "pointer",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        '&:hover': {
+          opacity: 0.8,
+        },
       }}
     >
       <Box
@@ -49,7 +58,8 @@ const Logo = ({ size = "medium", variant = "full" }) => {
           width: icon + 8,
           height: icon + 8,
           borderRadius: "50%",
-          background: "linear-gradient(135deg, #FF6B5B 0%, #FF8566 100%)",
+          background: "#000000",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         <ShoppingBag sx={{ fontSize: icon, color: "white" }} />
@@ -58,11 +68,9 @@ const Logo = ({ size = "medium", variant = "full" }) => {
         variant="h6"
         sx={{
           fontSize: text,
-          fontWeight: 700,
-          background: "linear-gradient(135deg, #FF6B5B 0%, #FF8566 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          backgroundClip: "text",
+          fontWeight: 600,
+          color: "#1d1d1f",
+          letterSpacing: "-0.5px",
         }}
       >
         ShopHub
