@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Card,
@@ -8,50 +9,67 @@ import {
   Grid,
   CardMedia,
   IconButton,
+  Box,
+  Divider,
+  Paper,
+  Chip,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import LocalShippingIcon from "@mui/icons-material/LocalShipping";
+import SecurityIcon from "@mui/icons-material/Security";
 import { useSelector, useDispatch } from "react-redux";
 import { action } from "../redux/slices/cartSlice";
 import axios from "axios";
 import urlConfig from "../urlConfig";
-import { useAuth } from "../contexts/AuthProvider";
+
+function loadScript() {
+  return new Promise(function (resolve, reject) {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = function () {
+      resolve();
+    };
+    script.onerror = () => {
+      reject();
+    };
+    document.body.appendChild(script);
+  });
+}
 
 const Cart = () => {
+  const navigate = useNavigate();
   const savedUser = sessionStorage.getItem("user");
   const parsedUser = JSON.parse(savedUser);
   const cart = useSelector((store) => {
     return store.cartReducer.cartProducts;
   });
   const dispatch = useDispatch();
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+
   const handleIncrease = (product) => {
     dispatch(action.addToCart({ product }));
+    setSnackbar({ open: true, message: "Item quantity increased", severity: "success" });
   };
 
   const handleDecrease = (product) => {
     dispatch(action.deleteFromCart(product));
+    setSnackbar({ open: true, message: "Item quantity decreased", severity: "info" });
   };
 
   const handleRemove = (product) => {
     dispatch(action.removeFromCart(product));
+    setSnackbar({ open: true, message: "Item removed from cart", severity: "warning" });
   };
 
-   const clearCart = (product) => {
+  const clearCart = () => {
     dispatch(action.clearCart());
+    setSnackbar({ open: true, message: "Cart cleared", severity: "info" });
   };
-
-  function loadScript() {
-    return new Promise(function (resolve, reject) {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = function () {
-        resolve();
-      };
-      script.onerror = () => {
-        reject();
-      };
-      document.body.appendChild(script);
-    });
-  }
 
   const proceedCheckout = async (totalPrice) => {
     // to load the script
@@ -96,86 +114,305 @@ const Cart = () => {
           phone_number: "9899999999",
         },
       };
-      var rzp1 = new Razorpay(options);
+      const rzp1 = new Razorpay(options);
       rzp1.open();
     } catch (err) {
       alert(err.message);
     }
   };
 
-  const totalPrice = cart.reduce(
+  const subtotal = cart.reduce(
     (total, item) => total + item.price * item.indQuantity,
     0
   );
+  const shipping = subtotal > 500 ? 0 : 50;
+  const tax = subtotal * 0.18; // 18% GST
+  const totalPrice = subtotal + shipping + tax;
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   return (
-    <Container sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Shopping Cart
-      </Typography>
-      {cart.length === 0 ? (
-        <Typography variant="h6" color="text.secondary">
-          Your cart is empty
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {/* Header */}
+      <Box sx={{ mb: 4, textAlign: 'center' }}>
+        <Typography
+          variant="h3"
+          component="h1"
+          sx={{
+            fontWeight: 700,
+            background: 'linear-gradient(135deg, #6C4EFF 0%, #FF6B6B 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            mb: 1
+          }}
+        >
+          Shopping Cart
         </Typography>
-      ) : (
-        <>
-          <Grid container spacing={2}>
-            {cart.map((item) => (
-              <Grid item xs={12} key={item.id}>
-                <Card
-                  sx={{ display: "flex", alignItems: "center", padding: 2 }}
-                >
-                  <CardMedia
-                    component="img"
-                    image={item.images[0]}
-                    alt={item.name}
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      objectFit: "cover",
-                      borderRadius: 1,
-                    }}
-                  />
+        <Typography variant="body1" color="text.secondary">
+          {cart.length} {cart.length === 1 ? 'item' : 'items'} in your cart
+        </Typography>
+      </Box>
 
-                  <CardContent sx={{ flex: 1 }}>
-                    <Typography variant="h6">{item.name}</Typography>
-                    <Typography variant="body1">
-                      Rs {item.price} x {item.indQuantity}
-                    </Typography>
-                  </CardContent>
-                  <Button
-                    onClick={() => handleDecrease(item)}
-                    variant="outlined"
-                  >
-                    -
-                  </Button>
-                  <Typography sx={{ mx: 2 }}>{item.indQuantity}</Typography>
-                  <Button
-                    onClick={() => handleIncrease(item)}
-                    variant="outlined"
-                  >
-                    +
-                  </Button>
-                  <IconButton onClick={() => handleRemove(item)} color="error">
-                    <DeleteIcon />
-                  </IconButton>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-          <Typography variant="h5" sx={{ mt: 3 }}>
-            Total: Rs {totalPrice}
+      {cart.length === 0 ? (
+        <Paper
+          sx={{
+            p: 6,
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+            borderRadius: 3
+          }}
+        >
+          <ShoppingCartIcon sx={{ fontSize: 80, color: '#6C4EFF', mb: 2, opacity: 0.7 }} />
+          <Typography variant="h5" sx={{ mb: 2, fontWeight: 600 }}>
+            Your cart is empty
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+            Add some amazing products to your cart and start shopping!
           </Typography>
           <Button
             variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-            onClick={() => proceedCheckout(totalPrice)}
+            size="large"
+            onClick={() => navigate('/')}
+            sx={{
+              backgroundColor: '#6C4EFF',
+              '&:hover': { backgroundColor: '#5a3ed1' },
+              px: 4,
+              py: 1.5,
+              borderRadius: 2
+            }}
           >
-            Proceed to Checkout
+            Continue Shopping
           </Button>
-        </>
+        </Paper>
+      ) : (
+        <Grid container spacing={4}>
+          {/* Cart Items */}
+          <Grid item xs={12} md={8}>
+            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+                <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                  Cart Items
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  onClick={clearCart}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Clear Cart
+                </Button>
+              </Box>
+
+              {cart.map((item, index) => (
+                <Card
+                  key={item.id}
+                  sx={{
+                    mb: index < cart.length - 1 ? 2 : 0,
+                    borderRadius: 2,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                      transform: 'translateY(-2px)'
+                    }
+                  }}
+                >
+                  <CardContent sx={{ p: 3 }}>
+                    <Grid container spacing={3} alignItems="center">
+                      <Grid item xs={12} sm={3}>
+                        <CardMedia
+                          component="img"
+                          image={item.images[0]}
+                          alt={item.name}
+                          sx={{
+                            width: '100%',
+                            height: 120,
+                            objectFit: 'cover',
+                            borderRadius: 2,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={5}>
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 1,
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          {item.name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          Rs {item.price.toLocaleString()} each
+                        </Typography>
+                        <Chip
+                          label={`Rs ${(item.price * item.indQuantity).toLocaleString()}`}
+                          sx={{
+                            backgroundColor: '#6C4EFF',
+                            color: 'white',
+                            fontWeight: 600
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={4}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: 2,
+                            p: 0.5
+                          }}>
+                            <IconButton
+                              onClick={() => handleDecrease(item)}
+                              size="small"
+                              sx={{
+                                color: '#6C4EFF',
+                                '&:hover': { backgroundColor: 'rgba(108, 78, 255, 0.1)' }
+                              }}
+                            >
+                              <RemoveIcon fontSize="small" />
+                            </IconButton>
+                            <Typography sx={{
+                              mx: 2,
+                              fontWeight: 600,
+                              minWidth: '30px',
+                              textAlign: 'center'
+                            }}>
+                              {item.indQuantity}
+                            </Typography>
+                            <IconButton
+                              onClick={() => handleIncrease(item)}
+                              size="small"
+                              sx={{
+                                color: '#6C4EFF',
+                                '&:hover': { backgroundColor: 'rgba(108, 78, 255, 0.1)' }
+                              }}
+                            >
+                              <AddIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+
+                          <IconButton
+                            onClick={() => handleRemove(item)}
+                            sx={{
+                              color: '#ff6b6b',
+                              '&:hover': {
+                                backgroundColor: 'rgba(255, 107, 107, 0.1)',
+                                transform: 'scale(1.1)'
+                              },
+                              transition: 'all 0.2s ease'
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              ))}
+            </Paper>
+          </Grid>
+
+          {/* Order Summary */}
+          <Grid item xs={12} md={4}>
+            <Paper sx={{ p: 3, borderRadius: 3, boxShadow: 2, position: 'sticky', top: 20 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+                Order Summary
+              </Typography>
+
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body1">Subtotal ({cart.length} items)</Typography>
+                  <Typography variant="body1">Rs {subtotal.toLocaleString()}</Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                  <Typography variant="body1">Shipping</Typography>
+                  <Typography variant="body1" sx={{ color: shipping === 0 ? '#4caf50' : 'inherit' }}>
+                    {shipping === 0 ? 'FREE' : `Rs ${shipping}`}
+                  </Typography>
+                </Box>
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                  <Typography variant="body1">Tax (GST 18%)</Typography>
+                  <Typography variant="body1">Rs {tax.toFixed(2)}</Typography>
+                </Box>
+
+                <Divider sx={{ my: 2 }} />
+
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>Total</Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: '#6C4EFF' }}>
+                    Rs {totalPrice.toLocaleString()}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Button
+                variant="contained"
+                fullWidth
+                size="large"
+                onClick={() => proceedCheckout(totalPrice)}
+                sx={{
+                  backgroundColor: '#6C4EFF',
+                  '&:hover': {
+                    backgroundColor: '#5a3ed1',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 8px 25px rgba(108, 78, 255, 0.3)'
+                  },
+                  borderRadius: 2,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  transition: 'all 0.3s ease',
+                  mb: 2
+                }}
+              >
+                Proceed to Checkout
+              </Button>
+
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mb: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <SecurityIcon sx={{ color: '#4caf50', fontSize: 20 }} />
+                  <Typography variant="caption" color="text.secondary">Secure</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LocalShippingIcon sx={{ color: '#2196f3', fontSize: 20 }} />
+                  <Typography variant="caption" color="text.secondary">Fast Delivery</Typography>
+                </Box>
+              </Box>
+
+              {subtotal < 500 && (
+                <Alert severity="info" sx={{ borderRadius: 2 }}>
+                  Add Rs {(500 - subtotal).toLocaleString()} more for FREE shipping!
+                </Alert>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
       )}
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

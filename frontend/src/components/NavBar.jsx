@@ -17,6 +17,7 @@ import URL from "../urlConfig";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import { useSelector } from "react-redux";
 import { useAuth } from "../contexts/AuthProvider";
 import logo from "../assets/logo.png";
@@ -104,6 +105,16 @@ const NavBar = () => {
               >
                 <ShoppingCartIcon />
               </Badge>
+            </IconButton>
+
+            {/* Bookings */}
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                navigate("/bookings");
+              }}
+            >
+              <ReceiptIcon />
             </IconButton>
 
             {/* User Profile */}

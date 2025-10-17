@@ -67,6 +67,28 @@ bookingRouter.get("/", protectRoute, async (req, res) => {
   }
 });
 
+bookingRouter.get("/user/:userId", protectRoute, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const userBookings = await bookingModel
+      .find({ user: userId })
+      .populate({ path: "user", select: "name email" })
+      .populate({ path: "product", select: "name price" })
+      .sort({ bookedAt: -1 }); // Sort by booking date, newest first
+
+    res.status(200).json({
+      message: "success",
+      data: userBookings,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "error",
+      error: err.message,
+    });
+  }
+});
+
 bookingRouter.post("/verify", async (req, res) => {
   try {
     console.log("webhook called", req.body);

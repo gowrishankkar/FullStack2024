@@ -7,8 +7,7 @@ import basicOps from "../utility/basicOps";
 import { usePaginationContext } from "../contexts/PaginationContext";
 import axios from "axios";
 import URL from "../urlConfig";
-import { TextField, InputAdornment, IconButton } from "@mui/material";
-import { Pagination, Stack } from "@mui/material";
+import { Pagination, Stack, CircularProgress, Box } from "@mui/material";
 import { InputBase, Paper, Grid } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -18,36 +17,50 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortDir, setsortDir] = useState(0);
   const [currCategory, setCurrCategory] = useState("All categories");
-  const { pageSize, pageNum, setPageNum, setPageSize } = usePaginationContext();
+  const { pageSize, pageNum, setPageNum } = usePaginationContext();
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
-  const onPageChange = useEffect(() => {
+  useEffect(() => {
     (async function () {
-      // const resp = await fetch(`https://fakestoreapi.com/products`)
-      const productData = await axios.get(URL.GET_PRODUCTS);
-      const productArr = productData.data.data;
-      const productList = productArr.map((product) => {
-        return {
-          id: product._id,
-          title: product.name,
-          image: product.images[0],
-          price: product.price,
-          ...product,
-        };
-      });
-      console.log(productList);
-
-      // const productData = await resp.json();
-      setProducts(productList);
+      setLoadingProducts(true);
+      try {
+        // const resp = await fetch(`https://fakestoreapi.com/products`)
+        const productData = await axios.get(URL.GET_PRODUCTS);
+        const productArr = productData.data.data;
+        const productList = productArr.map((product) => {
+          return {
+            id: product._id,
+            title: product.name,
+            image: product.images[0],
+            price: product.price,
+            ...product,
+          };
+        });
+        console.log(productList);
+        setProducts(productList);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoadingProducts(false);
+      }
     })();
   }, []);
 
   /**************getting all the categroies ********************/
   useEffect(() => {
     (async function () {
-      // const resp = await fetch(`https://fakestoreapi.com/products/categories`)
-      const categories = await axios.get(URL.GET_CATEGORIES);
-      console.log(categories);
-      setCategories(categories.data.data);
+      setLoadingCategories(true);
+      try {
+        // const resp = await fetch(`https://fakestoreapi.com/products/categories`)
+        const categories = await axios.get(URL.GET_CATEGORIES);
+        console.log(categories);
+        setCategories(categories.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setLoadingCategories(false);
+      }
     })();
   }, []);
   const object = basicOps(
@@ -100,41 +113,65 @@ function Home() {
           </Grid>
           <Grid item>
             <ArrowCircleUpIcon
-              style={{ color: "blue" }}
-              fontSize="large"
+              sx={{
+                color: "blue",
+                fontSize: "large",
+                cursor: "pointer",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
               onClick={() => {
                 setsortDir(1);
                 setPageNum(1);
               }}
-            ></ArrowCircleUpIcon>
+            />
             <ArrowCircleDownIcon
-              fontSize="large"
-              style={{ color: "blue" }}
+              sx={{
+                color: "blue",
+                fontSize: "large",
+                cursor: "pointer",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.1)",
+                },
+              }}
               onClick={() => {
                 setsortDir(-1);
                 setPageNum(1);
               }}
-            ></ArrowCircleDownIcon>
+            />
           </Grid>
         </Grid>
         <Grid item xs={9} md="auto">
-          <Categories
-            categories={categories}
-            setCurrCategory={setCurrCategory}
-            currCategory={currCategory}
-          ></Categories>
+          {loadingCategories ? (
+            <Box display="flex" justifyContent="center" alignItems="center" height={50}>
+              <CircularProgress size={30} />
+            </Box>
+          ) : (
+            <Categories
+              categories={categories}
+              setCurrCategory={setCurrCategory}
+              currCategory={currCategory}
+            />
+          )}
         </Grid>
       </Grid>
 
       {/* main area  */}
       <main className="product_wrapper">
         {/* products will be there */}
-        <ProductList
-          productList={filteredSortedgroupByArr}
-          currCategory={currCategory}
-        >
-           ̰
-        </ProductList>
+        {loadingProducts ? (
+          <Box display="flex" justifyContent="center" alignItems="center" height={200}>
+            <CircularProgress size={50} />
+          </Box>
+        ) : (
+          <ProductList
+            productList={filteredSortedgroupByArr}
+            currCategory={currCategory}
+          />
+        )}
       </main>
       {/* pagination */}
       <div className="pagination">

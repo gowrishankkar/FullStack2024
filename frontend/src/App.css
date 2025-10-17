@@ -6,8 +6,9 @@
 
 body {
   font-family: sans-serif;
-  background-color: 
-    rgb(245, 243, 243);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
 }
 
 .nav_wrapper {
@@ -50,10 +51,23 @@ body {
   margin-top: 3rem;
   margin-left: 2rem;
   margin-right: 2rem;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 2rem;
-  justify-content: space-evenly;
+  justify-items: center;
+  padding-bottom: 2rem;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .product {

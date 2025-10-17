@@ -7,11 +7,14 @@ import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import User from "./pages/User";
+import Bookings from "./pages/Bookings";
 import PaginationProvider from "./contexts/PaginationContext";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import AuthProvider from "./contexts/AuthProvider";
 import RequireAuth from "./components/RequireAuth";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 
 function App() {
   const location = useLocation();
@@ -22,41 +25,46 @@ function App() {
     );
   }, [location]);
   return (
-    <AuthProvider>
-      <PaginationProvider>
-        {showNavbar && <NavBar></NavBar>}
-        <Routes>
-          <Route element={<RequireAuth></RequireAuth>}>
-            <Route path="/" element={<Home></Home>}></Route>
-          </Route>
+    <ThemeProvider theme={theme}>
+      <AuthProvider>
+        <PaginationProvider>
+          {showNavbar && <NavBar></NavBar>}
+          <Routes>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route path="/" element={<Home></Home>}></Route>
+            </Route>
 
-          <Route path="/signup" element={<Signup></Signup>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
-          <Route element={<RequireAuth></RequireAuth>}>
-            <Route path="/cart" element={<Cart></Cart>}></Route>
-          </Route>
-          <Route element={<RequireAuth></RequireAuth>}>
-            <Route
-              path="/product/:id"
-              element={<ProductDetails></ProductDetails>}
-            >
+            <Route path="/signup" element={<Signup></Signup>}></Route>
+            <Route path="/login" element={<Login></Login>}></Route>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route path="/cart" element={<Cart></Cart>}></Route>
+            </Route>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route path="/bookings" element={<Bookings></Bookings>}></Route>
+            </Route>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route
+                path="/product/:id"
+                element={<ProductDetails></ProductDetails>}
+              >
+                {" "}
+              </Route>
+            </Route>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route path="/user" element={<User></User>}>
+                {" "}
+              </Route>
+            </Route>
+            <Route element={<RequireAuth></RequireAuth>}>
+              <Route path="/home" element={<Navigate to="/"></Navigate>}></Route>
+            </Route>
+            <Route path="*" element={<PageNotFound></PageNotFound>}>
               {" "}
             </Route>
-          </Route>
-          <Route element={<RequireAuth></RequireAuth>}>
-            <Route path="/user" element={<User></User>}>
-              {" "}
-            </Route>
-          </Route>
-          <Route element={<RequireAuth></RequireAuth>}>
-            <Route path="/home" element={<Navigate to="/"></Navigate>}></Route>
-          </Route>
-          <Route path="*" element={<PageNotFound></PageNotFound>}>
-            {" "}
-          </Route>
-        </Routes>
-      </PaginationProvider>
-    </AuthProvider>
+          </Routes>
+        </PaginationProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 
