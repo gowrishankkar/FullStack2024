@@ -13,8 +13,6 @@ import {
   CircularProgress,
   Alert,
   Button,
-  IconButton,
-  Tooltip,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -25,19 +23,11 @@ import {
   Avatar,
   ListItemText,
 } from "@mui/material";
-import {
-  ShoppingBag,
-  Receipt,
-  CalendarToday,
-  Payment,
-  LocalShipping,
-  CheckCircle,
-  Cancel,
-  Schedule,
-} from "@mui/icons-material";
+import { ShoppingBag, Receipt, CalendarToday, Payment, LocalShipping, CheckCircle, Cancel, Schedule } from "@mui/icons-material";
 import axios from "axios";
 import jsPDF from "jspdf";
 import URL from "../urlConfig";
+import { useSelector } from "react-redux";
 
 const Bookings = () => {
   const navigate = useNavigate();
@@ -46,6 +36,11 @@ const Bookings = () => {
   const [error, setError] = useState(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [productDetails, setProductDetails] = useState({});
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
+  // Get cart products from Redux
+  const cartProducts = useSelector((store) => store.cartReducer.cartProducts);
 
   const savedUser = sessionStorage.getItem("user");
   const parsedUser = JSON.parse(savedUser);
@@ -66,6 +61,67 @@ const Bookings = () => {
       setError("Failed to load bookings. Please try again.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchProductDetails = async (productIds) => {
+    try {
+      setLoadingDetails(true);
+      const details = {};
+      
+      // Try to get products from Redux first
+      productIds.forEach(id => {
+        const product = cartProducts.find(p => p._id === id || p.id === id);
+        if (product) {
+          details[id] = product;
+        }
+      });
+      
+      // Get any remaining products from the API
+      const missingIds = productIds.filter(id => !details[id]);
+      
+      if (missingIds.length > 0) {
+        console.log("Fetching missing products from API:", missingIds);
+        try {
+          const allProductsResponse = await axios.get(URL.GET_PRODUCTS);
+          const allProducts = allProductsResponse.data.data || [];
+          
+          missingIds.forEach(id => {
+            const product = allProducts.find(p => p._id === id);
+            if (product) {
+              details[id] = product;
+            }
+          });
+        } catch (err) {
+          console.error("Error fetching products from API:", err);
+        }
+      }
+      
+      console.log("Product details collected:", details);
+      setProductDetails(details);
+    } catch (err) {
+      console.error("Error fetching product details:", err);
+    } finally {
+      setLoadingDetails(false);
+    }
+  };
+
+  const handleViewDetails = (booking) => {
+    setSelectedBooking(booking);
+    setDetailsOpen(true);
+    
+    // Log booking data to debug
+    console.log("Booking data:", booking);
+    console.log("Booking products:", booking.product);
+    console.log("Cart products in Redux:", cartProducts);
+    
+    // Extract product IDs from booking and try to get details from Redux
+    // Handle both string IDs and object IDs
+    const productIds = booking.product.map(p => 
+      typeof p === 'string' ? p : (p._id || p.id)
+    );
+    if (productIds.length > 0) {
+      fetchProductDetails(productIds);
     }
   };
 
@@ -387,10 +443,7 @@ const Bookings = () => {
                           borderRadius: 2,
                           '&:hover': { backgroundColor: '#6C4EFF', color: 'white' }
                         }}
-                        onClick={() => {
-                          setSelectedBooking(booking);
-                          setDetailsOpen(true);
-                        }}
+                        onClick={() => handleViewDetails(booking)}
                       >
                         View Details
                       </Button>
@@ -481,32 +534,63 @@ const Bookings = () => {
           )}
         </DialogTitle>
         <DialogContent dividers>
-          {selectedBooking && selectedBooking.product && selectedBooking.product.length > 0 ? (
+          {loadingDetails ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : selectedBooking && selectedBooking.product && selectedBooking.product.length > 0 ? (
             <List>
-              {selectedBooking.product.map((p, idx) => (
-                <ListItem key={idx} alignItems="flex-start" sx={{ gap: 2 }}>
-                  <ListItemAvatar>
-                    <Avatar
-                      variant="rounded"
-                      src={p.image || p.images?.[0] || p.imageUrl}
-                      sx={{ width: 64, height: 64, mr: 1, bgcolor: '#f5f5f5' }}
+              {selectedBooking.product.map((productId) => {
+                // Handle both string IDs and object IDs
+                const id = typeof productId === 'string' ? productId : productId?._id || productId?.id;
+                const fullProduct = productDetails[id];
+                
+                // Log the product data we're displaying
+                console.log(`Displaying product ${id}:`, fullProduct);
+                
+                return (
+                  <ListItem key={id} alignItems="flex-start" sx={{ gap: 2, mb: 2 }}>
+                    <ListItemAvatar>
+                      <Avatar
+                        variant="rounded"
+                        src={fullProduct?.images?.[0] || fullProduct?.image || ''}
+                        sx={{ 
+                          width: 80, 
+                          height: 80, 
+                          mr: 1, 
+                          bgcolor: '#f5f5f5',
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                          borderRadius: 2
+                        }}
+                      >
+                        {!fullProduct?.images?.[0] && !fullProduct?.image && '📦'}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <Typography sx={{ fontWeight: 600, color: '#1a1a1a' }}>
+                          {fullProduct?.name || `Product ${typeof id === 'string' ? id?.slice(-6) : id}`}
+                        </Typography>
+                      }
+                      secondary={
+                        <Box sx={{ mt: 1 }}>
+                          <Typography component="span" variant="body2" sx={{ display: 'block', mb: 0.5 }}>
+                            <strong>Quantity:</strong> 1
+                          </Typography>
+                          <Typography component="span" variant="body2" sx={{ display: 'block', mb: 0.5 }}>
+                            <strong>Price:</strong> Rs {(fullProduct?.price || 0)?.toLocaleString()}
+                          </Typography>
+                          {fullProduct?.description && (
+                            <Typography component="span" variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+                              {fullProduct.description.substring(0, 50)}...
+                            </Typography>
+                          )}
+                        </Box>
+                      }
                     />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={p.name || `Product ${p._id?.slice(-6) || idx + 1}`}
-                    secondary={
-                      <Box>
-                        <Typography component="span" variant="body2" color="text.primary" sx={{ display: 'block', fontWeight: 600 }}>
-                          Qty: {p.quantity || p.qty || p.indQuantity || 1}
-                        </Typography>
-                        <Typography component="span" variant="body2" color="text.secondary">
-                          Price: Rs {p.price || p.priceAtBooking || p.unitPrice ? (p.price || p.priceAtBooking || p.unitPrice).toLocaleString() : 'N/A'}
-                        </Typography>
-                      </Box>
-                    }
-                  />
-                </ListItem>
-              ))}
+                  </ListItem>
+                );
+              })}
             </List>
           ) : (
             <Typography>No items found for this order.</Typography>

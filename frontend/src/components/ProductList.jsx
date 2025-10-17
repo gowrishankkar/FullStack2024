@@ -20,6 +20,7 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StarIcon from "@mui/icons-material/Star";
+import ProductSkeleton from "./ProductSkeleton";
 
 function ProductList(props) {
   const { productList } = props;
@@ -38,29 +39,28 @@ function ProductList(props) {
   return (
     <Box sx={{ width: "100%", px: { xs: 1, sm: 2, md: 3 } }}>
       {productList == null ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height={200}
+        <Grid
+          container
+          spacing={{ xs: 2, sm: 3, md: 3 }}
+          sx={{
+            justifyContent: "space-between",
+            width: "100%",
+          }}
         >
-          <Typography variant="h6" color="text.secondary">
-            Loading...
-          </Typography>
-        </Box>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductSkeleton key={`skeleton-${index}`} />
+          ))}
+        </Grid>
       ) : (
         <Grid
           container
           spacing={{ xs: 2, sm: 3, md: 3 }}
           sx={{
-            justifyContent: {
-              xs: "center",
-              sm: "flex-start",
-              md: "flex-start",
-            },
+            justifyContent: "space-between",
+            width: "100%",
           }}
         >
-          {productList.map((product) => {
+          {productList.map((product, index) => {
             const inCart = cartProducts.some((item) => item.id === product.id);
             const cartItem = cartProducts.find(
               (item) => item.id === product.id
@@ -77,13 +77,24 @@ function ProductList(props) {
                 key={product.id}
                 sx={{
                   display: "flex",
-                  justifyContent: "center",
+                  justifyContent: "stretch",
+                  animation: `cardSlideUp 0.6s ease-out forwards`,
+                  animationDelay: `${(index % 8) * 0.1}s`,
+                  "@keyframes cardSlideUp": {
+                    from: {
+                      opacity: 0,
+                      transform: "translateY(30px)",
+                    },
+                    to: {
+                      opacity: 1,
+                      transform: "translateY(0)",
+                    },
+                  },
                 }}
               >
                 <Card
                   sx={{
                     width: "100%",
-                    maxWidth: 320,
                     minHeight: 420,
                     display: "flex",
                     flexDirection: "column",
@@ -91,11 +102,11 @@ function ProductList(props) {
                     borderRadius: 3,
                     position: "relative",
                     overflow: "hidden",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                     border: "1px solid rgba(0,0,0,0.04)",
                     "&:hover": {
-                      transform: "translateY(-4px)",
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.12)",
+                      transform: "translateY(-8px)",
+                      boxShadow: "0 12px 40px rgba(0,0,0,0.15)",
                       borderColor: "rgba(108, 78, 255, 0.2)",
                     },
                     cursor: "pointer",
@@ -131,6 +142,7 @@ function ProductList(props) {
                       position: "relative",
                       overflow: "hidden",
                       height: 240,
+                      backgroundColor: "#f5f5f5",
                     }}
                   >
                     <CardMedia
@@ -139,10 +151,21 @@ function ProductList(props) {
                       image={product.images[0]}
                       alt={product.name}
                       sx={{
-                        transition: "transform 0.4s ease",
+                        transition: "transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
                         objectFit: "cover",
+                        animation: "imageLoad 0.6s ease-out",
+                        "@keyframes imageLoad": {
+                          from: {
+                            opacity: 0.8,
+                            filter: "blur(4px)",
+                          },
+                          to: {
+                            opacity: 1,
+                            filter: "blur(0px)",
+                          },
+                        },
                         "&:hover": {
-                          transform: "scale(1.08)",
+                          transform: "scale(1.1)",
                         },
                       }}
                     />
@@ -160,6 +183,17 @@ function ProductList(props) {
                         fontSize: "0.7rem",
                         height: "24px",
                         zIndex: 2,
+                        animation: "badgePop 0.5s ease-out",
+                        "@keyframes badgePop": {
+                          from: {
+                            opacity: 0,
+                            transform: "scale(0) translate(-10px, -10px)",
+                          },
+                          to: {
+                            opacity: 1,
+                            transform: "scale(1) translate(0, 0)",
+                          },
+                        },
                       }}
                     />
                   </Box>
@@ -352,8 +386,11 @@ function ProductList(props) {
                             backgroundColor: "#6C4EFF",
                             "&:hover": {
                               backgroundColor: "#5a3ed1",
-                              transform: "translateY(-1px)",
-                              boxShadow: "0 4px 12px rgba(108, 78, 255, 0.3)",
+                              transform: "translateY(-2px)",
+                              boxShadow: "0 6px 20px rgba(108, 78, 255, 0.4)",
+                            },
+                            "&:active": {
+                              transform: "translateY(0px)",
                             },
                             borderRadius: 2,
                             textTransform: "none",
@@ -362,8 +399,19 @@ function ProductList(props) {
                             py: 1,
                             px: 2,
                             flex: 1,
-                            transition: "all 0.2s ease",
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
                             boxShadow: "0 2px 8px rgba(108, 78, 255, 0.2)",
+                            animation: "fadeIn 0.5s ease-out",
+                            "@keyframes fadeIn": {
+                              from: {
+                                opacity: 0,
+                                transform: "translateY(10px)",
+                              },
+                              to: {
+                                opacity: 1,
+                                transform: "translateY(0)",
+                              },
+                            },
                           }}
                         >
                           Add to Cart

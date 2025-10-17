@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./theme/animations.css";
 import NavBar from "./components/NavBar";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import PageNotFound from "./pages/PageNotFound";

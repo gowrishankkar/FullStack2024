@@ -645,14 +645,72 @@ function Home() {
 
       {/* pagination */}
       <div className="pagination">
-        <Stack spacing={2} alignItems="center" sx={{ mt: 3 }}>
+        <Stack spacing={2} alignItems="center" sx={{ mt: 5, mb: 4 }}>
           <Pagination
             count={totalPages}
             page={pageNum}
             onChange={(event, value) => setPageNum(value)}
             color="primary"
             size="large"
+            sx={{
+              '& .MuiPagination-ul': {
+                gap: 0.5,
+              },
+              '& .MuiButtonBase-root': {
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                borderRadius: '8px',
+                fontWeight: 500,
+                fontSize: '0.95rem',
+                minWidth: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              },
+              '& .MuiButtonBase-root:not(.Mui-selected)': {
+                backgroundColor: '#f5f5f5',
+                color: '#666',
+                border: '1.5px solid #e0e0e0',
+                '&:hover': {
+                  backgroundColor: '#e3f2fd',
+                  borderColor: '#1976d2',
+                  color: '#1976d2',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 12px rgba(25, 118, 210, 0.2)',
+                },
+              },
+              '& .MuiButtonBase-root.Mui-selected': {
+                backgroundColor: '#1976d2',
+                color: 'white',
+                border: '1.5px solid #1565c0',
+                fontWeight: 600,
+                boxShadow: '0 4px 12px rgba(25, 118, 210, 0.3)',
+                '&:hover': {
+                  backgroundColor: '#1565c0',
+                  boxShadow: '0 6px 16px rgba(25, 118, 210, 0.4)',
+                },
+              },
+              '& .MuiButtonBase-root:disabled': {
+                backgroundColor: '#fafafa',
+                color: '#bdbdbd',
+                border: '1.5px solid #e0e0e0',
+                opacity: 0.6,
+              },
+            }}
+            variant="outlined"
+            shape="rounded"
           />
+          <Typography 
+            variant="caption" 
+            sx={{ 
+              color: '#999',
+              fontWeight: 500,
+              letterSpacing: '0.5px',
+              animation: 'textFadeIn 0.6s ease-out',
+            }}
+          >
+            Page {pageNum} of {totalPages}
+          </Typography>
         </Stack>
       </div>
     </>
