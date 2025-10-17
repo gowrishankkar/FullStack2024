@@ -15,6 +15,15 @@ import {
   Button,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
 } from "@mui/material";
 import {
   ShoppingBag,
@@ -27,6 +36,7 @@ import {
   Schedule,
 } from "@mui/icons-material";
 import axios from "axios";
+import jsPDF from "jspdf";
 import URL from "../urlConfig";
 
 const Bookings = () => {
@@ -34,6 +44,8 @@ const Bookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState(null);
 
   const savedUser = sessionStorage.getItem("user");
   const parsedUser = JSON.parse(savedUser);
@@ -91,6 +103,89 @@ const Bookings = () => {
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  const generateInvoicePDF = (booking) => {
+    const doc = new jsPDF();
+    
+    // Header
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.text("INVOICE", 105, 20, { align: "center" });
+    
+    // Company info
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "normal");
+    doc.text("Your Company Name", 20, 35);
+    doc.text("123 Business Street", 20, 42);
+    doc.text("City, State 12345", 20, 49);
+    doc.text("Phone: (555) 123-4567", 20, 56);
+    
+    // Invoice details
+    doc.setFont("helvetica", "bold");
+    doc.text("Invoice Details:", 130, 35);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Invoice #: ${booking._id.slice(-8).toUpperCase()}`, 130, 42);
+    doc.text(`Date: ${formatDate(booking.bookedAt)}`, 130, 49);
+    doc.text(`Status: ${booking.status.charAt(0).toUpperCase() + booking.status.slice(1)}`, 130, 56);
+    
+    // Customer info
+    doc.setFont("helvetica", "bold");
+    doc.text("Bill To:", 20, 75);
+    doc.setFont("helvetica", "normal");
+    doc.text(parsedUser.name || "Customer", 20, 82);
+    doc.text(parsedUser.email || "", 20, 89);
+    
+    // Items header
+    doc.setFont("helvetica", "bold");
+    doc.text("Description", 20, 110);
+    doc.text("Qty", 140, 110);
+    doc.text("Price", 160, 110);
+    doc.text("Total", 180, 110);
+    
+    // Line
+    doc.line(20, 115, 190, 115);
+    
+    let yPosition = 125;
+    let totalAmount = 0;
+    
+    // Items
+    booking.product.forEach((item, index) => {
+      const name = item.name || `Product ${item._id?.slice(-6) || index + 1}`;
+      const quantity = item.quantity || item.qty || item.indQuantity || 1;
+      const price = item.price || item.priceAtBooking || item.unitPrice || 0;
+      const itemTotal = quantity * price;
+      totalAmount += itemTotal;
+      
+      doc.setFont("helvetica", "normal");
+      // Wrap long product names
+      const maxWidth = 100;
+      const lines = doc.splitTextToSize(name, maxWidth);
+      doc.text(lines, 20, yPosition);
+      
+      doc.text(quantity.toString(), 140, yPosition);
+      doc.text(`Rs ${price.toLocaleString()}`, 160, yPosition);
+      doc.text(`Rs ${itemTotal.toLocaleString()}`, 180, yPosition);
+      
+      yPosition += lines.length * 7 + 5;
+    });
+    
+    // Total
+    doc.line(20, yPosition, 190, yPosition);
+    yPosition += 10;
+    doc.setFont("helvetica", "bold");
+    doc.text("Total Amount:", 140, yPosition);
+    doc.text(`Rs ${totalAmount.toLocaleString()}`, 180, yPosition);
+    
+    // Footer
+    yPosition += 20;
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("Thank you for your business!", 105, yPosition, { align: "center" });
+    doc.text("Payment ID: " + (booking.paymentOrderId || "N/A"), 20, yPosition + 10);
+    
+    // Save the PDF
+    doc.save(`Invoice_${booking._id.slice(-8).toUpperCase()}.pdf`);
   };
 
   if (loading) {
@@ -286,15 +381,19 @@ const Bookings = () => {
 
                   {/* Action Buttons */}
                   <Box sx={{ display: 'flex', gap: 2, mt: 3, justifyContent: 'flex-end' }}>
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        borderRadius: 2,
-                        '&:hover': { backgroundColor: '#6C4EFF', color: 'white' }
-                      }}
-                    >
-                      View Details
-                    </Button>
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          borderRadius: 2,
+                          '&:hover': { backgroundColor: '#6C4EFF', color: 'white' }
+                        }}
+                        onClick={() => {
+                          setSelectedBooking(booking);
+                          setDetailsOpen(true);
+                        }}
+                      >
+                        View Details
+                      </Button>
                     {booking.status === 'confirmed' && (
                       <Button
                         variant="contained"
@@ -303,6 +402,7 @@ const Bookings = () => {
                           '&:hover': { backgroundColor: '#5a3ed1' },
                           borderRadius: 2
                         }}
+                        onClick={() => generateInvoicePDF(booking)}
                       >
                         Download Invoice
                       </Button>
@@ -365,8 +465,63 @@ const Bookings = () => {
           </Grid>
         </Paper>
       )}
+
+      {/* Details Dialog */}
+      <Dialog
+        open={detailsOpen}
+        onClose={() => setDetailsOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>
+          {selectedBooking ? (
+            `Order Details - #${selectedBooking._id.slice(-8).toUpperCase()}`
+          ) : (
+            'Order Details'
+          )}
+        </DialogTitle>
+        <DialogContent dividers>
+          {selectedBooking && selectedBooking.product && selectedBooking.product.length > 0 ? (
+            <List>
+              {selectedBooking.product.map((p, idx) => (
+                <ListItem key={idx} alignItems="flex-start" sx={{ gap: 2 }}>
+                  <ListItemAvatar>
+                    <Avatar
+                      variant="rounded"
+                      src={p.image || p.images?.[0] || p.imageUrl}
+                      sx={{ width: 64, height: 64, mr: 1, bgcolor: '#f5f5f5' }}
+                    />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={p.name || `Product ${p._id?.slice(-6) || idx + 1}`}
+                    secondary={
+                      <Box>
+                        <Typography component="span" variant="body2" color="text.primary" sx={{ display: 'block', fontWeight: 600 }}>
+                          Qty: {p.quantity || p.qty || p.indQuantity || 1}
+                        </Typography>
+                        <Typography component="span" variant="body2" color="text.secondary">
+                          Price: Rs {p.price || p.priceAtBooking || p.unitPrice ? (p.price || p.priceAtBooking || p.unitPrice).toLocaleString() : 'N/A'}
+                        </Typography>
+                      </Box>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography>No items found for this order.</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDetailsOpen(false)} sx={{ color: '#6C4EFF' }}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
 
 export default Bookings;
+
+// Details dialog (rendered by Bookings component via state)

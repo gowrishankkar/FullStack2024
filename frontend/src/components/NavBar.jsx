@@ -18,11 +18,13 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MenuIcon from "@mui/icons-material/Menu";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import HomeIcon from "@mui/icons-material/Home";
 import { useSelector } from "react-redux";
 import { useAuth } from "../contexts/AuthProvider";
 import logo from "../assets/logo.png";
 import { InputBase, Paper } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Logo from "./Logo";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -77,14 +79,18 @@ const NavBar = () => {
         >
           {/* Logo */}
           <Box
-            component="img"
             onClick={() => {
-              navigate("/home");
+              navigate("/");
             }}
-            src={logo}
-            alt="GSP"
-            sx={{ width: 80, height: 80 }}
-          />
+            sx={{
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+            }}
+          >
+            <Logo size="small" />
+          </Box>
 
           {/* Desktop Navigation */}
           <Grid
@@ -95,6 +101,24 @@ const NavBar = () => {
               gap: 2,
             }}
           >
+            {/* Home */}
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                navigate("/");
+              }}
+              sx={{
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  transform: 'scale(1.1)',
+                },
+                transition: 'all 0.2s ease',
+              }}
+              title="Home"
+            >
+              <HomeIcon />
+            </IconButton>
+
             <IconButton color="inherit">
               <Badge
                 badgeContent={quantity}
@@ -140,7 +164,15 @@ const NavBar = () => {
           open={Boolean(mobileMenu)}
           onClose={handleCloseMobileMenu}
         >
-          <MenuItem onClick={handleCloseMobileMenu}>Home</MenuItem>
+          <MenuItem
+            onClick={() => {
+              navigate("/");
+              handleCloseMobileMenu();
+            }}
+          >
+            <HomeIcon sx={{ mr: 1 }} />
+            Home
+          </MenuItem>
           <MenuItem onClick={handleCloseMobileMenu}>Products</MenuItem>
           <MenuItem onClick={handleCloseMobileMenu}>Contact</MenuItem>
         </Menu>
