@@ -1,0 +1,234 @@
+
+Table of Contents
+
+List of Tables	6
+List of Figures	7
+Applied Software Project	8
+Abstract	8
+Project Description	8
+Requirement Gathering	9
+Payments Integration	9
+Security	9
+Deployment Flow	10
+Technologies Used	10
+Conclusion	10
+References	11
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List of Tables
+(To be written sequentially as they appear in the text)
+
+
+Table No.	Title	Page No.
+1		
+2		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+List of Figures
+(List of Images, Graphs, Charts sequentially as they appear in the text)
+
+
+
+Figure No.	Title	Page No.
+1		
+2		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Applied Software Project
+Abstract
+The abstract for an applied software project should succinctly summarize its title,
+purpose, methods, results, and conclusions. 
+
+Since it is a technical project, focus on its real-life applications in the society or how such software
+tools can be applied to modify existing processes for better outcomes in different industries.
+
+Aim for conciseness, usually limiting it to under 300 words, to effectively convey the
+project's essence.
+Project Description
+Describe the project, Outline the objectives and explain its relevance. 
+Use Pictures, flow diagrams to illustrate the project well
+
+Use the below format as reference when including a picture
+
+ 
+Figure 1.1: Project Development Process  (Figure captions go below figures.)
+
+
+
+Requirement Gathering
+
+●	Describe the requirements - Functional, Non-Functional Requirements
+●	Describe the Users and Use Cases
+○	Include detailed Use Case Diagram / Images to illustrate
+●	List and detail out the Feature set - 
+○	Use Tables to list out the feature set
+
+
+Use the below format as reference when including a table
+
+Table 1.1: < Table caption > (Table captions go above tables.)
+
+		
+		
+		
+
+
+Payments Integration
+Explain how Payment Gateways work, describe the payments flow, discuss the security and standards followed ( PCI DSS ) 
+
+Begin by selecting a suitable payment gateway like Razorpay, Stripe
+Lookout for integration related code in the docs like for Razorpay - https://razorpay.com/docs/payments/server-integration/nodejs/payment-gateway/build-integration/
+
+React specific integration -
+https://razorpay.com/docs/payments/server-integration/nodejs/faqs/#3-can-i-integrate-razorpay-checkout-with-reactjs
+
+ - Role of webhooks, HTTP Tunneling ( used for webhook when backend running locally )
+Security
+a.	Discuss bcrypt.  discuss salt and encryption .  using bcrypt for password hashing
+b.	Different node packages for added security measures like express-rate-limiter ( api rate limiting ), express-mongo-sanitize ( for no-sql injection ) , helmet ( hiding server details in response), etc
+
+Deployment Flow
+
+a.	Maintain code in github 
+b.	Can use aws or for simple deployment process, can use Render
+c.	For frontend deployment many use Netlify. If you do so, then can use Render for backend apis and then connect to it through URL in Netlify
+d.	Remember to handle CORS issue 
+
+Technologies Used
+MERN Stack - 
+
+Mongo, React, NodeJS, Express (MERN Stack) - Detail each of them and other technologies that have
+been used if possible with diagrams and also elaborate how they can be used in real life
+Applications by giving examples….
+(Include proper references if you are quoting articles from the internet)
+
+Tip - Use the internet to improve and enrich your project but DO NOT PLAGIARIZE - Include proper references if you are quoting articles from the internet
+
+Conclusion
+
+The Conclusion should include some key points as elaborated below - 
+
+●	Key Takeaways: Highlight the important concepts and technologies learned from doing the Project
+●	Practical Applications : Significance of technologies with their real-world applications
+●	Limitations : Limitations of the technologies, cost implications and suggestions for improvement
+
+References
+
+Include the websites or works or the list of works referred to in a text or consulted by you for writing this report
+
+1.	Name of the Website, Date and time of referring to the Website, Name of the Author, Title/Topic
+2.	Author Name, Title / Topic, Research Paper Name / Book Name, Year of Publication
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Format Guidelines
+
+1)	Detailed and Elaborate report of 40 pages at least is expected
+2)	Margins - Every page of your document must meet the margin requirements of 1.25 inches on the left and right, and 1 inch on the top and bottom. 
+3)	Font: 
+a)	Style: Times New Roman, 
+b)	Font Size:14 (For Headings), 12 (For body text) in black colored text. 
+c)	All text must be the same justification, like left justified or fully justified. 
+4)	Line Spacing: 
+a)	Body of the text: 1.5 
+b)	List of Tables/graphs/charts/bibliography: single line. 
+5)	Alignment: 
+a)	Title page: Centre 
+b)	Chapter Heading: Centre 
+c)	Subheading: Left 
+d)	Body of the text: Justify
+6)	Titles: All titles and subtitles should be in bold. All tables/graphs/charts/figures should have appropriate titles. 
+7)	 Numbering of the tables, charts, graphs should be in the following fashion: Second table/graph/chart in the second chapter should be numbered as Table/graph/chart no. 2.02; where the first digit stands for chapter no. and digits after (.) stands for number of table/graph/charts in that chapter. Same numbering should be followed for all other chapters.
+
+
+
