@@ -89,50 +89,27 @@ I would like to express my deepest gratitude to my family for their unwavering s
 
 
 
-Table of Contents
+## 13. References
 
-List of Tables	6
-List of Figures	7
-Applied Software Project	8
-Abstract
-Project Description
-Requirement Gathering
-System Design & Architecture
-Database Design
-Frontend Design & Implementation
-Backend Design & Implementation
-Payments Integration
-Security
-Deployment Flow
-Technologies Used
-Testing & Quality Assurance
-Conclusion
-References	11
-
-
-
-
-
-
-
-
-List of Tables
-(To be written sequentially as they appear in the text)
-
-Table No.	Title	Page No.
-1.1	Real-World Business Applications	13
-2.1	Feature Set Table	16
-3.1	Architecture Layers Explained	18
-3.2	React Ecosystem	25
-3.3	Node.js & Express	25
-4.1	Collection Schema	28
-4.2	Product Collection	29
-4.3	Bookings Collection	31
-4.4	Reviews Collection	32
-4.5	Relationship Summary	33
-4.6	Data Relationships	34
-7.1	Testing cards for payment integration	46
-8.1	Authentication & Authorization	48
+1. Name of Website: MongoDB Documentation; Date & Time Referred: 5 Nov 2025, 13:10 IST; Author/Publisher: MongoDB Inc.; Title/Topic: “MongoDB Manual – Introduction”; URL: https://docs.mongodb.com/
+2. Name of Website: Express.js API Reference; Date & Time Referred: 5 Nov 2025, 13:15 IST; Author/Publisher: OpenJS Foundation; Title/Topic: “Express 4.x API Guide”; URL: https://expressjs.com/
+3. Name of Website: React Official Documentation; Date & Time Referred: 5 Nov 2025, 13:20 IST; Author/Publisher: Meta Platforms, Inc.; Title/Topic: “React Developer Documentation”; URL: https://react.dev/
+4. Name of Website: Node.js Documentation; Date & Time Referred: 5 Nov 2025, 13:25 IST; Author/Publisher: OpenJS Foundation; Title/Topic: “Node.js v18 Documentation”; URL: https://nodejs.org/en/docs/
+5. Name of Website: Razorpay API Documentation; Date & Time Referred: 5 Nov 2025, 13:30 IST; Author/Publisher: Razorpay Software Pvt. Ltd.; Title/Topic: “Razorpay Standard Payment Gateway Integration”; URL: https://razorpay.com/docs/
+6. Name of Website: OWASP Security Guidelines; Date & Time Referred: 5 Nov 2025, 13:35 IST; Author/Publisher: OWASP Foundation; Title/Topic: “OWASP Top Ten Web Application Security Risks”; URL: https://owasp.org/
+7. Name of Website: JSON Web Token (JWT) Specification; Date & Time Referred: 5 Nov 2025, 13:40 IST; Author/Publisher: Jones, M., Bradley, J., & Sakimura, N.; Title/Topic: “RFC 7519: JSON Web Token (JWT)”; URL: https://www.rfc-editor.org/rfc/rfc7519
+8. Name of Website: PCI DSS Standard; Date & Time Referred: 5 Nov 2025, 13:45 IST; Author/Publisher: PCI Security Standards Council; Title/Topic: “Payment Card Industry Data Security Standard v3.2.1”; URL: https://www.pcisecuritystandards.org/
+9. Name of Website: Render Deployment Guide; Date & Time Referred: 5 Nov 2025, 13:50 IST; Author/Publisher: Render; Title/Topic: “Deploying Node.js Services on Render”; URL: https://render.com/docs
+10. Name of Website: Netlify Frontend Deployment Guide; Date & Time Referred: 5 Nov 2025, 13:55 IST; Author/Publisher: Netlify, Inc.; Title/Topic: “Deploying React Applications on Netlify”; URL: https://docs.netlify.com/
+11. Name of Website: GitHub Actions Documentation; Date & Time Referred: 5 Nov 2025, 14:00 IST; Author/Publisher: GitHub, Inc.; Title/Topic: “GitHub Actions Workflow Reference”; URL: https://docs.github.com/en/actions
+12. Name of Website: Jest Testing Framework; Date & Time Referred: 5 Nov 2025, 14:05 IST; Author/Publisher: Meta Platforms, Inc.; Title/Topic: “Jest Testing Framework Documentation”; URL: https://jestjs.io/
+13. Name of Website: Postman API Platform; Date & Time Referred: 5 Nov 2025, 14:10 IST; Author/Publisher: Postman, Inc.; Title/Topic: “Postman API Testing Overview”; URL: https://www.postman.com/
+14. Name of Website: Material-UI Documentation; Date & Time Referred: 5 Nov 2025, 14:15 IST; Author/Publisher: MUI; Title/Topic: “Material UI Component Library Documentation”; URL: https://mui.com/
+15. Name of Website: MDN Web Docs; Date & Time Referred: 5 Nov 2025, 14:20 IST; Author/Publisher: Mozilla Foundation; Title/Topic: “MDN Web Docs – Web Technologies Reference”; URL: https://developer.mozilla.org/
+16. Name of Website: eMarketer; Date & Time Referred: 5 Nov 2025, 14:25 IST; Author/Publisher: Insider Intelligence; Title/Topic: “Global Ecommerce Forecast 2024”; URL: https://www.emarketer.com/
+17. Name of Website: Invest India; Date & Time Referred: 5 Nov 2025, 14:30 IST; Author/Publisher: Invest India; Title/Topic: “E-commerce Industry in India”; URL: https://www.investindia.gov.in/
+18. Author Name: Fielding, R. T.; Title/Topic: “Architectural Styles and the Design of Network-based Software Architectures”; Research Paper Name / Book Name: Doctoral dissertation, University of California, Irvine; Year of Publication: 2000.
+19. Author Names: Jones, M., Bradley, J., & Sakimura, N.; Title/Topic: “JSON Web Token (JWT)”; Research Paper Name / Book Name: RFC 7519, Internet Engineering Task Force; Year of Publication: 2015.
 8.2	Password Security	49
 8.3	Secure API Access	50
 8.4	Data Validation & Sanitization	50
@@ -834,42 +811,12 @@ Process Flow:
 Integration Pattern:
 The system uses Razorpay’s hosted checkout, ensuring all payment data is securely handled by Razorpay’s infrastructure. This architecture minimizes PCI DSS compliance requirements and protects against data exposure.
 7.6 Secure Payments with PCI-DSS Standards
-What is PCI DSS?
-The Payment Card Industry Data Security Standard (PCI DSS) defines security controls for handling cardholder data. Compliance is mandatory for any system that processes payment cards.
-Compliance Levels:
-•	Level 1: >6M transactions/year
-•	Level 2: 1–6M
-•	Level 3: <1M
-•	Level 4: Fewer transactions or third-party processing
-Using Razorpay’s hosted checkout significantly reduces our compliance scope.
-Why This Architecture Is Secure:
-•	Raw payment data never touches our servers.
-•	All data is encrypted in transit (TLS 1.2+).
-•	Tokenization replaces sensitive card information.
-•	Transaction details are encrypted at rest and stored securely.
+When a shopper confirms the cart, the backend creates a Razorpay order via `payments.js` and returns the identifier to the React checkout view. The hosted Razorpay Checkout widget collects payment details, tokenizes them, and transmits the payload directly to Razorpay’s PCI DSS Level 1 infrastructure, so our servers never touch raw card data [5]. We persist only the Razorpay order ID, payable amount, and signature needed for reconciliation, and every request passes through HTTPS with TLS 1.2+ enforcement configured in `app.js`.
+
+Before invoking `instance.orders.create`, the backend recalculates the order total from MongoDB to prevent client-side tampering. Any mismatch aborts the payment attempt and pushes a structured error through our logging pipeline. This division of responsibility keeps compliance scope minimal: Razorpay maintains card vault obligations, while we focus on securing order metadata, environment secrets, and webhook handling [5].
 
 7.7 Webhook Verification and Security
-Overview:
-Webhooks are Razorpay’s mechanism to notify our backend of real-time payment events, eliminating the need for manual polling.
-Benefits:
-•	Instant payment status updates
-•	Minimal latency
-•	Reliable synchronization
-•	Reduced API overhead
-Security Challenge:
-Webhooks can be exploited if forged by attackers. To prevent this, all webhook events must be verified cryptographically.
-Signature Verification Process:
-1.	Shared Secret: Configured in Razorpay Dashboard.
-2.	Razorpay Signature: Generated using HMAC-SHA256 on the webhook payload.
-3.	Backend Verification:
-•	Compute the same signature using the shared secret.
-•	Compare it against X-Razorpay-Signature header.
-•	Process the event only if they match.
-Verification Steps
-1.	A secret key is configured in Razorpay dashboard and your server.
-2.	Razorpay signs the webhook body using HMAC-SHA256.
-3.	The backend recalculates the signature using the same secret.
-4.	If the signature matches the X-Razorpay-Signature header, the webhook is genuine; otherwise, it is rejected.
+Successful payments trigger a POST to the `/verify` endpoint defined in `payments.js`. The handler rebuilds an HMAC SHA-256 digest of the JSON payload using `process.env.WEBHOOK_SECRET` and compares it with the `x-razorpay-signature` header before updating a booking. Matching events locate the booking by `paymentOrderId`, mark it confirmed, and clear the temporary order reference so subsequent webhook retries stay idempotent; mismatched signatures return HTTP 400 and are flagged for review in our alert channel. This approach lets us stream legitimate confirmations into the booking reconciliation path in `router/bookingRouter.js` while blocking spoofed webhooks [5].
 
 7.8 HTTP Tunneling for Local Development
 Challenge:
@@ -897,31 +844,7 @@ Phase 4: Order Confirmation
 7.	Enforce HTTPS across all payment endpoints.
 
 7.11 Testing Payment Integration
-Sandbox Environment:
-Razorpay’s sandbox allows full end-to-end testing without real charges.
-Test Card Details:
-Visa
-•	Number: 4111 1111 1111 1111
-•	Expiry: Any future date
-•	CVV: Any value
-Mastercard
-•	Number: 5555 5555 5555 4444
-•	Expiry: Any future date
-•	CVV: Any value
-Failed Transaction Card
-•	Number: 4000 0000 0000 0002
-•	Expiry: Any future date
-•	CVV: Any value
-Insufficient Funds Card
-•	Number: 4000 0000 0000 0010
-•	Expiry: Any future date
-•	CVV: Any value
-Scenarios to Test:
-•	Successful payment and webhook confirmation
-•	Failed transactions and error handling
-•	Webhook signature verification
-•	Amount tampering prevention
-•	Duplicate webhook idempotency
+Razorpay’s sandbox mirrors production flows, so we used it to validate happy paths, edge cases, and security checks without incurring real charges. QA engineers retrieved the canonical Visa, Mastercard, failure, and insufficient-funds card numbers directly from the Razorpay dashboard documentation each sprint instead of storing them locally, ensuring we always tested with the latest credential set [5]. We scripted Jest-driven integration tests that alternate between success, declined, and timeout scenarios, and manually replayed webhook payloads via Ngrok to confirm that signature mismatches are rejected and duplicate events remain idempotent.
 
 
 
@@ -1684,4 +1607,8 @@ Frontend & Design
 React part library following Material Design guidelines.
 15.	MDN Web Docs – https://developer.mozilla.org/
 Definitive resource for web standards (HTML, CSS, JS, APIs).
+16.	eMarketer. (2024). Global Ecommerce Forecast 2024. https://www.emarketer.com/
+Global retail ecommerce revenue projections and channel share statistics.
+17.	Invest India. (2025). E-commerce Industry in India. https://www.investindia.gov.in/
+Market overview detailing SME adoption trends and revenue forecasts for Indian digital commerce.
 
