@@ -209,10 +209,10 @@ const Bookings = () => {
     
     // Items header
     doc.setFont("helvetica", "bold");
-    doc.text("Description", 20, 110);
-    doc.text("Qty", 140, 110);
-    doc.text("Price", 160, 110);
-    doc.text("Total", 180, 110);
+  doc.text("Description", 20, 110);
+  doc.text("Qty", 130, 110, { align: "center" });
+  doc.text("Price", 170, 110, { align: "right" });
+  doc.text("Total", 200, 110, { align: "right" });
     
     // Line
     doc.line(20, 115, 190, 115);
@@ -234,9 +234,9 @@ const Bookings = () => {
       const lines = doc.splitTextToSize(name, maxWidth);
       doc.text(lines, 20, yPosition);
       
-      doc.text(quantity.toString(), 140, yPosition);
-      doc.text(`Rs ${price.toLocaleString()}`, 160, yPosition);
-      doc.text(`Rs ${itemTotal.toLocaleString()}`, 180, yPosition);
+  doc.text(quantity.toString(), 130, yPosition, { align: "center" });
+  doc.text(`Rs ${price.toLocaleString()}`, 170, yPosition, { align: "right" });
+  doc.text(`Rs ${itemTotal.toLocaleString()}`, 200, yPosition, { align: "right" });
       
       yPosition += lines.length * 7 + 5;
     });
@@ -245,8 +245,8 @@ const Bookings = () => {
     doc.line(20, yPosition, 190, yPosition);
     yPosition += 10;
     doc.setFont("helvetica", "bold");
-    doc.text("Total Amount:", 140, yPosition);
-    doc.text(`Rs ${totalAmount.toLocaleString()}`, 180, yPosition);
+  doc.text("Total Amount:", 170, yPosition, { align: "right" });
+  doc.text(`Rs ${totalAmount.toLocaleString()}`, 200, yPosition, { align: "right" });
     
     // Footer
     yPosition += 20;
