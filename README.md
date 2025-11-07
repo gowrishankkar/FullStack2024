@@ -5,6 +5,10 @@
 - Supports catalog browsing, faceted search, cart management, Razorpay based checkout, user onboarding, and review capture.
 - Ships with rate limiting, MongoDB sanitization, cookie-based JWT auth, and email helpers (Nodemailer/SendGrid) for transactional flows.
 
+## Deployed URLs
+- UI: https://ecommercegsp.netlify.app
+- Backend: https://fullstack2024-8k4h.onrender.com
+
 ## Repo Layout
 - `app.js`, `router/`, `controllers/`, `models/`, `utility/`: Express REST API and supporting modules.
 - `frontend/`: Vite React SPA (Material UI, Redux Toolkit, react-router). Run independently.
