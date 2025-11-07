@@ -12,54 +12,76 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const { product, quantity } = action.payload;
-      if (quantity && quantity > 0) {
-        state.cartQuantity += quantity;
-      } else {
-        state.cartQuantity++;
-      }
       const productToBeAdded = product;
-      const requiredProduct = state.cartProducts.find((cProduct) => {
-        return cProduct.id == productToBeAdded.id;
+      const productId = productToBeAdded.id || productToBeAdded._id;
+
+      if (!productId) {
+        return;
+      }
+
+      const incrementBy = quantity && quantity > 0 ? quantity : 1;
+      state.cartQuantity += incrementBy;
+
+      const existingProduct = state.cartProducts.find((cProduct) => {
+        const currentId = cProduct.id || cProduct._id;
+        return currentId === productId;
       });
-      if (requiredProduct == undefined) {
-        // not present
+
+      if (!existingProduct) {
         state.cartProducts.push({
           ...productToBeAdded,
-          indQuantity: quantity ? quantity : 1,
+          id: productId,
+          indQuantity: incrementBy,
         });
       } else {
-        // already present
-        quantity
-          ? quantity + requiredProduct.indQuantity
-          : requiredProduct.indQuantity++;
+        existingProduct.indQuantity += incrementBy;
       }
     },
 
     removeFromCart: (state, action) => {
-      state.cartQuantity -= action.payload.indQuantity;
+      const product = action.payload;
+      const productId = product.id || product._id;
+
+      if (!productId) {
+        return;
+      }
+
+      state.cartQuantity -= product.indQuantity || 0;
       state.cartProducts = state.cartProducts.filter(
-        (product) => product.id !== action.payload.id
+        (existingProduct) => {
+          const currentId = existingProduct.id || existingProduct._id;
+          return currentId !== productId;
+        }
       );
     },
 
     deleteFromCart: (state, action) => {
-      const productToBeAdded = action.payload;
+      const productToBeRemoved = action.payload;
+      const productId = productToBeRemoved.id || productToBeRemoved._id;
+
+      if (!productId) {
+        return;
+      }
+
       const productIdx = state.cartProducts.findIndex((cProduct) => {
-        return cProduct.id == productToBeAdded.id;
+        const currentId = cProduct.id || cProduct._id;
+        return currentId === productId;
       });
-      if (productIdx == -1) {
+      if (productIdx === -1) {
+        return;
+      }
+
+      const product = state.cartProducts[productIdx];
+
+      if (product.indQuantity <= 1) {
+        state.cartQuantity--;
+        state.cartProducts = state.cartProducts.filter((existingProduct) => {
+          const currentId = existingProduct.id || existingProduct._id;
+          return currentId !== productId;
+        });
       } else {
-        let product = state.cartProducts[productIdx];
-        if (product.indQuantity == 1) {
-          state.cartProducts[productIdx].indQuantity--;
-          state.cartQuantity--;
-          state.cartProducts = state.cartProducts.filter(
-            (product) => product.id !== action.payload.id
-          );
-        } else {
-          state.cartProducts[productIdx].indQuantity--;
-          state.cartQuantity--;
-        }
+        state.cartProducts[productIdx].indQuantity--;
+        state.cartQuantity--;
       }
     },
     clearCart: (state, action) => {

@@ -50,12 +50,12 @@ function Login() {
       });
       console.log("logged in user", res);
       const user = res.data.user;
-      loginAuthenticatedUser({...user, _id: res.data.data._id});
+      const token = res.data.token;
+      loginAuthenticatedUser({ ...user, _id: res.data.data._id }, token);
       setLoading(false);
       setEmail("");
       setPassword("");
       navigate("/");
-      sessionStorage.setItem("user", JSON.stringify({...user, _id: res.data.data._id}));
     } catch (err) {
       setErrMsg(err.response?.data?.message || err.message || "Login failed. Please try again.");
       console.log(err);

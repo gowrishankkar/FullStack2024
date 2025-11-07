@@ -4,12 +4,35 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const SECRET_KEY = "RandomKey12321@4564546";
+const isProduction = process.env.NODE_ENV === "production";
+
+const getTokenFromRequest = (req) => {
+  // Prefer the httpOnly cookie, but fall back to Authorization header for flexibility.
+  if (req.cookies && req.cookies.token) {
+    return req.cookies.token;
+  }
+
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    return authHeader.split(" ")[1];
+  }
+
+  return null;
+};
 
 const protectRoute = async function (req, res, next) {
   try {
-    const { token } = req.cookies;
-    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log('protectRoute called', req)
+    const token = getTokenFromRequest(req);
+    console.log('token', token)
+    if (!token) {
+      return res.status(401).json({
+        message: "authentication required",
+      });
+    }
 
+    const decoded = jwt.verify(token, SECRET_KEY);
+    console.log('decoded', decoded)
     if (decoded) {
       const userId = decoded.data;
       req.userId = userId;
@@ -17,7 +40,7 @@ const protectRoute = async function (req, res, next) {
     }
   } catch (err) {
     console.log(err);
-    res.status(400).json({
+    res.status(401).json({
       message: "invalid token",
     });
   }
@@ -150,6 +173,9 @@ async function loginHandler(req, res, next) {
         res.cookie("token", token, {
           maxAge: 1000 * 60 * 60 * 24,
           httpOnly: true,
+          sameSite: isProduction ? "None" : "Lax",
+          secure: isProduction,
+          path: "/",
         });
         res.json({
           message: "login successfull",
@@ -187,7 +213,12 @@ const isAuthorized = function (allowedRoles) {
 };
 
 const logoutHandler = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: isProduction ? "None" : "Lax",
+    secure: isProduction,
+    path: "/",
+  });
   res.status(200).json({
     message: "user logged out",
   });

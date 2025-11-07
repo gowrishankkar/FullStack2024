@@ -3,17 +3,11 @@ const express = require("express");
 const reviewRouter = express.Router();
 const Review = require("../models/reviewModel");
 const Product = require("../models/productModel");
-const {protectRoute} = require("../controllers/authController");
+const { protectRoute } = require("../controllers/authController");
 
-reviewRouter.post("/:productId", protectRoute, async (req, res) => {
-  /**
-   * 1. get the produvt id fronm the params
-   * 2. get the review and rating from the body
-   * 3. get the user id from the req object
-   * 4. update / add the rating and review to the product
-   * 5. create a review object
-   * 6. push the review id in the product reviews array
-   */
+reviewRouter.use(protectRoute);
+
+reviewRouter.post("/:productId", async (req, res) => {
   try {
     const userId = req.userId;
     const productId = req.params.productId;

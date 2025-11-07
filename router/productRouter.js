@@ -69,12 +69,13 @@ async function getBigBillionProducts(req, res, next) {
   next();
 }
 
+ProductRouter.use(protectRoute);
+
 ProductRouter.get("/", getProducts);
 ProductRouter.get("/categories", getProductCategories);
 ProductRouter.post(
   "/",
   checkInput,
-  protectRoute,
   isAuthorized(authorizedProductRoles),
   createProducthandler
 );
@@ -83,7 +84,6 @@ ProductRouter.get("/:id", getproductById);
 ProductRouter.patch("/:id", updateProductById);
 ProductRouter.delete(
   "/:id",
-  protectRoute,
   isAuthorized(authorizedProductRoles),
   deleteProductById
 );

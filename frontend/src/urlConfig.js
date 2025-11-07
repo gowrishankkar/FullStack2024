@@ -1,5 +1,5 @@
-// const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
-const BASE_URL = "https://fullstack2024-8k4h.onrender.com";
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
+// const BASE_URL = "https://fullstack2024-8k4h.onrender.com";
 
 const urlConfig = {
   LOGIN_URL: `${BASE_URL}/api/auth/login`,
@@ -9,6 +9,7 @@ const urlConfig = {
   GET_PRODUCTS: `${BASE_URL}/api/product`,
   GET_CATEGORIES: `${BASE_URL}/api/product/categories`,
   BOOKING: `${BASE_URL}/api/booking`,
+  BOOKING_VERIFY: `${BASE_URL}/api/booking/verify-client`,
   USER: `${BASE_URL}/api/user`,
 };
 

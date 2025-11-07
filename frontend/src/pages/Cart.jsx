@@ -86,9 +86,6 @@ const Cart = () => {
           user: name,
           product: productIds,
           priceAtBooking: Number(totalPrice),
-        },
-        {
-          withCredentials: true,
         }
       );
       console.log(resp, "resp");
@@ -104,12 +101,31 @@ const Cart = () => {
         order_id: id,
         name: "Payment",
         description: "Thanks for the payment",
-        handler: function (response) {
-          alert("Payment done successfully");
-          clearCart();
+        handler: async function (response) {
+          try {
+            await axios.post(urlConfig.BOOKING_VERIFY, {
+              paymentOrderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            });
+            setSnackbar({
+              open: true,
+              message: "Payment verified successfully",
+              severity: "success",
+            });
+            clearCart();
+          } catch (verificationError) {
+            console.error("Payment verification failed", verificationError);
+            setSnackbar({
+              open: true,
+              message:
+                "Payment verification failed. Please contact support with your payment ID.",
+              severity: "error",
+            });
+          }
         },
         prefill: {
-          name: "Jasbir",
+          name: "tester",
           email: "abc@gmail.com",
           phone_number: "9899999999",
         },
@@ -117,7 +133,11 @@ const Cart = () => {
       const rzp1 = new Razorpay(options);
       rzp1.open();
     } catch (err) {
-      alert(err.message);
+      setSnackbar({
+        open: true,
+        message: err.message || "Unable to process payment. Please try again.",
+        severity: "error",
+      });
     }
   };
 
@@ -408,9 +428,14 @@ const Cart = () => {
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        sx={{ mt: 2 }}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%', fontSize: '1rem', py: 2, px: 3 }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>

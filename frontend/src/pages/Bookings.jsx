@@ -49,12 +49,26 @@ const Bookings = () => {
     fetchBookings();
   }, []);
 
+  const getBookingProducts = (bookingData) => {
+    if (!bookingData) {
+      return [];
+    }
+
+    if (Array.isArray(bookingData.product)) {
+      return bookingData.product;
+    }
+
+    if (Array.isArray(bookingData.products)) {
+      return bookingData.products;
+    }
+
+    return [];
+  };
+
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${URL.BOOKING}/user/${parsedUser._id}`, {
-        withCredentials: true,
-      });
+      const response = await axios.get(`${URL.BOOKING}/user/${parsedUser._id}`);
       setBookings(response.data.data || []);
     } catch (err) {
       console.error("Error fetching bookings:", err);
@@ -112,12 +126,13 @@ const Bookings = () => {
     
     // Log booking data to debug
     console.log("Booking data:", booking);
-    console.log("Booking products:", booking.product);
+  const bookingProducts = getBookingProducts(booking);
+  console.log("Booking products:", bookingProducts);
     console.log("Cart products in Redux:", cartProducts);
     
     // Extract product IDs from booking and try to get details from Redux
     // Handle both string IDs and object IDs
-    const productIds = booking.product.map(p => 
+  const productIds = getBookingProducts(booking).map(p => 
       typeof p === 'string' ? p : (p._id || p.id)
     );
     if (productIds.length > 0) {
@@ -206,7 +221,7 @@ const Bookings = () => {
     let totalAmount = 0;
     
     // Items
-    booking.product.forEach((item, index) => {
+  getBookingProducts(booking).forEach((item, index) => {
       const name = item.name || `Product ${item._id?.slice(-6) || index + 1}`;
       const quantity = item.quantity || item.qty || item.indQuantity || 1;
       const price = item.price || item.priceAtBooking || item.unitPrice || 0;
@@ -399,7 +414,7 @@ const Bookings = () => {
                             Items Ordered
                           </Typography>
                           <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                            {booking.product.length} item{booking.product.length !== 1 ? 's' : ''}
+                            {getBookingProducts(booking).length} item{getBookingProducts(booking).length !== 1 ? 's' : ''}
                           </Typography>
                         </Box>
                       </Box>
@@ -416,13 +431,13 @@ const Bookings = () => {
                   </Grid>
 
                   {/* Product List */}
-                  {booking.product && booking.product.length > 0 && (
+                  {getBookingProducts(booking).length > 0 && (
                     <Box sx={{ mt: 3 }}>
                       <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
                         Items in this order:
                       </Typography>
                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {booking.product.map((product, index) => (
+                        {getBookingProducts(booking).map((product, index) => (
                           <Chip
                             key={index}
                             label={product.name || `Product ${product._id?.slice(-6) || index + 1}`}
@@ -538,9 +553,9 @@ const Bookings = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 3 }}>
               <CircularProgress />
             </Box>
-          ) : selectedBooking && selectedBooking.product && selectedBooking.product.length > 0 ? (
+          ) : selectedBooking && getBookingProducts(selectedBooking).length > 0 ? (
             <List>
-              {selectedBooking.product.map((productId) => {
+              {getBookingProducts(selectedBooking).map((productId) => {
                 // Handle both string IDs and object IDs
                 const id = typeof productId === 'string' ? productId : productId?._id || productId?.id;
                 const fullProduct = productDetails[id];
